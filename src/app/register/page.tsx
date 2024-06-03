@@ -1,9 +1,12 @@
 "use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod"
+import * as z from "zod"
+import { useForm } from "react-hook-form"
+import { Button } from "@/components/ui/button"
+
+import { Country, State, City }  from 'country-state-city';
+
 import { useState } from "react";
-import { Country, State, City } from "country-state-city";
 
 import {
   Form,
@@ -13,19 +16,35 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+
+import { cn } from "@/lib/utils"
+
+import { Check, ChevronsUpDown } from "lucide-react"
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+} from "@/components/ui/command"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-
+} from "@/components/ui/select"
 import NavigationBar from "@/components/navigationBar";
 import Footer from "@/components/footer";
+
 
 const formSchema = z.object({
   category: z.string(),
@@ -57,18 +76,15 @@ const Register = () => {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      category: "",
-      name: "",
-      location: "",
-      coname: "",
-      wnumber: 0,
-      profession: "",
-      country: "",
-      state: "",
-      district: "",
-      lsgdzone: "",
-      username: "",
-      password: "",
+      // name: "",
+// location: "",
+// coname: "",
+// wnumber: 0,
+// profession: "",
+// lsgdzone: "",
+// username: "",
+// password: "",
+
     },
   });
 
@@ -308,7 +324,7 @@ const Register = () => {
                     </FormItem>
                   )}
                 />
-                <Button type="submit">Submit</Button>
+                <Button type="submit" className="bg-green-500 hover:bg-green-600 text-white">Submit</Button>
               </form>
             </Form>
           </div>
@@ -320,3 +336,5 @@ const Register = () => {
 };
 
 export default Register;
+
+
