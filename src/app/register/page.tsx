@@ -45,7 +45,6 @@ import NgoAdditionalDetails from "./ngo-additional-details/page";
 const formSchema = z.object({"categoryId":z.string(),"name":z.string().max(255),"location":z.string().max(255),"coordinator_name":z.string().max(255),"whatsapp_number":z.coerce.number(),"profession":z.string().max(255),"country":z.string(),"state":z.string(),"district":z.string(),"lsg":z.string().max(255),"username":z.string().max(255),"password":z.string().max(255)})
 
 export default function Register() {
-  const [groupId, setGroupId] = useState(null);
   const [countries, setCountries] = useState([]);
   const [states, setStates] = useState([]);
   const [districts, setDistricts] = useState([]);
@@ -129,7 +128,6 @@ async function onSubmit(values: z.infer<typeof formSchema>) {
     const result = await response.json();
     console.log(result);
     const { group_id } = result;
-      setGroupId(group_id);
       if (values.categoryId === "NGO")
           router.push("/register/ngo-additional-details?group_id=" + group_id);
       else if (values.categoryId === "School")
@@ -137,7 +135,7 @@ async function onSubmit(values: z.infer<typeof formSchema>) {
       else if (values.categoryId === "Residence Association")
           router.push("/register/residenceass-additional-details?group_id=" + group_id);
       else
-          router.push("/register/promoter-additional-details?group_id=" + group_id);
+          router.push("/register/residenceass_additional_details?group_id=" + group_id);
   } catch (error) {
     console.error("Error:", error);
   }

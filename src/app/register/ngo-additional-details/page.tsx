@@ -43,7 +43,7 @@ export default function NgoAdditionalDetails() {
     console.log(values);
     const dataWithIds = {
       ...values,
-      groupId: parseInt(group_id),
+      groupId: parseInt(group_id!),
     };
     console.log(dataWithIds);
     try {

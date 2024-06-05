@@ -22,6 +22,8 @@ import {
 } from "@/components/ui/select"
 import NavigationBar from "@/components/navigationBar";
 import Footer from "@/components/footer";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 const formSchema = z.object(
   {
     "city_name":z.string().max(255),
@@ -34,14 +36,96 @@ const formSchema = z.object(
   })
 
 export default function PromoterAdditionalDetails() {
+  const [countries, setCountries] = useState([]);
+  const [states, setStates] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [category, setCategory] = useState([]);
+  const [lsgd, setLsgd] = useState([]);
+  const [selectedDistrict, setSelectedDistrict] = useState("");
+
+  
+  useEffect(() => {
+    async function fetchData() {
+      const countryResponse = await fetch("https://gce-backend.onrender.com/api/v1/country");
+      const countryData = await countryResponse.json();
+      setCountries(countryData.country);
+
+      const stateResponse = await fetch("https://gce-backend.onrender.com/api/v1/state");
+      const stateData = await stateResponse.json();
+      setStates(stateData.state);
+
+      const districtResponse = await fetch("https://gce-backend.onrender.com/api/v1/district");
+      const districtData = await districtResponse.json();
+      setDistricts(districtData.district);
+
+      const categoryResponse = await fetch("https://gce-backend.onrender.com/api/v1/category");
+      const categoryData = await categoryResponse.json();
+      setCategory(categoryData.category);
+    }
+    fetchData();
+  }, []);
+
+  
+  useEffect(() => {
+    async function fetchLsgdData() {
+      if (selectedDistrict) {
+        console.log(selectedDistrict);
+        const lsgResponse = await fetch(`https://gce-backend.onrender.com/api/v1/lsg/${selectedDistrict}`);
+        const lsgData = await lsgResponse.json();
+        setLsgd(lsgData.district);
+      }
+    }
+    fetchLsgdData();
+  }, [selectedDistrict]);
+
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {},
   })
+// get group id from the url parameter
+const searchParams = useSearchParams();
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values)
-  }
+const group_id = searchParams.get("group_id");
+
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    console.log(values);
+    const dataWithIds = {
+      cityName : values.city_name,
+      countryId : countries.find((item) => item.cntry_name === values.country)?.cntry_id,
+      stateId : states.find((item) => item.st_name === values.state)?.st_id,
+      districtId : districts.find((item) => item.dis_name === values.district)?.dis_id,
+      lsgdId : lsgd.find((item) => item.lsg_name === values.lsgdzone)?.lsg_id,
+      totalNoOfMembers : values.total_team,
+      categoryIdPromoting : category.find((item) => item.group_type === values.category)?.id,
+      groupId: parseInt(group_id),
+     
+ 
+    };
+    console.log(dataWithIds);
+  
+    try {
+      const response = await fetch("https://gce-backend.onrender.com/api/v1/group/promoter/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(dataWithIds),
+      });
+  
+      if (!response.ok) {
+        console.log(response);
+        throw new Error("Network response was not ok");
+      }
+  
+      const result = await response.json();
+      console.log(result);
+      
+      // router.push("/register/promoter-additional-details?group_id=" + group_id);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
 
   return (
     <section className="bg-green-50 dark:bg-gray-900">
@@ -83,84 +167,41 @@ export default function PromoterAdditionalDetails() {
                                     </SelectTrigger>
                                   </FormControl>
                                   <SelectContent>
-                                    <SelectItem value="ngo">NGO</SelectItem>
-                                    <SelectItem value="school">School</SelectItem>
-                                    <SelectItem value="res_ass">Residence Association</SelectItem>
-                                    <SelectItem value="promoter">Promoter</SelectItem>
+                                  {category.map((category) => (
+                            <SelectItem key={category.id} value={category.group_type}>
+                              {category.group_type}
+                            </SelectItem>
+                          ))}
+                                  
                                   </SelectContent>
                                 </Select>
                                 <FormMessage />
                               </FormItem>
                             )}
-                          />           
+                          />
 
+                                  
 
-                  <FormField
-                          control={form.control}
-                          name="country"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Country</FormLabel>
-                              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                <FormControl>
-                                  <SelectTrigger>
-                                    <SelectValue placeholder="Choose country" />
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                  <SelectItem value="india">India</SelectItem>
-                                  <SelectItem value="other">Other</SelectItem>
-                                </SelectContent>
-                              </Select>
-                              <FormDescription>
-                                
-                              </FormDescription>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />             
-                  <FormField
-                          control={form.control}
-                          name="state"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>State</FormLabel>
-                              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                <FormControl>
-                                  <SelectTrigger>
-                                    <SelectValue placeholder="Choose state" />
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                  <SelectItem value="kerala">Kerala</SelectItem>
-                                  <SelectItem value="other">Other</SelectItem>
-                                </SelectContent>
-                              </Select>
-                              <FormDescription>
-                                
-                              </FormDescription>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />  
-
-
-                          <FormField
+                    <FormField
                             control={form.control}
-                            name="district"
+                            name="country"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>District</FormLabel>
+                                <FormLabel>Country</FormLabel>
                                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                                   <FormControl>
                                     <SelectTrigger>
-                                      <SelectValue placeholder="Choose district" />
+                                      <SelectValue placeholder="Choose a country" />
                                     </SelectTrigger>
                                   </FormControl>
                                   <SelectContent>
-                                    <SelectItem value="kozhikode">Kozhikode</SelectItem>
-                                    <SelectItem value="malappuram ">Malappuram</SelectItem>
+                                  {countries.map((country) => (
+                            <SelectItem key={country.cntry_id} value={country.cntry_name}>
+                              {country.cntry_name}
+                            </SelectItem>
+                          ))}
                                     <SelectItem value="other">Other</SelectItem>
+
                                   </SelectContent>
                                 </Select>
                                 <FormDescription>
@@ -170,21 +211,98 @@ export default function PromoterAdditionalDetails() {
                               </FormItem>
                             )}
                           />             
-                  <FormField
-                    control={form.control}
-                    name="lsgdzone"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>LSGD and Ward</FormLabel>
-                        <FormControl>
-                          <Input   {...field} />
-                        </FormControl>
-                        <FormDescription></FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                    <FormField
+                            control={form.control}
+                            name="state"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>State</FormLabel>
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                  <FormControl>
+                                    <SelectTrigger>
+                                      <SelectValue placeholder="Choose state" />
+                                    </SelectTrigger>
+                                  </FormControl>
+                                  <SelectContent>
+                                  {states.map((state) => (
+                            <SelectItem key={state.st_id} value={state.st_name}>
+                              {state.st_name}
+
+                            </SelectItem>
+                          ))}
+                          <SelectItem value="other">Other</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                                <FormDescription>
+                                  
+                                </FormDescription>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />  
+
+
+                    <FormField
+                            control={form.control}
+                            name="district"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>District</FormLabel>
+                                <Select onValueChange={(value) => {
+                                    form.setValue("district", value);
+                                    value = districts.find((item) => item.dis_name === value)?.dis_id
+                                    setSelectedDistrict(value);
+                                  }} defaultValue={field.value}>
+                                  <FormControl>
+                                    <SelectTrigger>
+                                      <SelectValue placeholder="Choose district" />
+                                    </SelectTrigger>
+                                  </FormControl>
+                                  <SelectContent>
+                                  {districts.map((district) => (
+                            <SelectItem key={district.dis_id} value={district.dis_name}>
+                              {district.dis_name}
+                            </SelectItem>
+                          ))}
+                                    <SelectItem value="other">Other</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                                <FormDescription>
+                                  
+                                </FormDescription>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
                   
+                    <FormField
+                            control={form.control}
+                            name="lsgdzone"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>LSGD / Zone</FormLabel>
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                  <FormControl>
+                                    <SelectTrigger>
+                                      <SelectValue placeholder="Choose Zone" />
+                                    </SelectTrigger>
+                                  </FormControl>
+                                  <SelectContent>
+                                  { lsgd && lsgd.map((lsg) => (
+                                          <SelectItem key={lsg.lsg_id} value={lsg.lsg_name}>
+                                            {lsg.lsg_name}
+                                          </SelectItem>
+                                        ))}
+                                    <SelectItem value="other">Other</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                                <FormDescription>
+                                  
+                                </FormDescription>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
                   <FormField
                     control={form.control}
                     name="total_team"

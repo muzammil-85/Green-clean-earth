@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/select";
 import NavigationBar from "@/components/navigationBar";
 import Footer from "@/components/footer";
+import { useSearchParams } from "next/navigation";
 
 const formSchema = z.object({
   name: z.string().min(1).max(255),
@@ -36,7 +37,7 @@ const formSchema = z.object({
   password: z.string().max(255),
   referralcode: z.string().min(1).max(255),
 });
-
+ 
 export default function UserRegister() {
   const [countries, setCountries] = useState([]);
   const [states, setStates] = useState([]);
@@ -64,24 +65,50 @@ export default function UserRegister() {
     fetchData();
   }, []);
 
+  const searchParams = useSearchParams();
+
+  const group_id = searchParams.get("group_id");
+
   async function onSubmit(values) {
     console.log(values);
-    // try {
-    //   const response = await fetch("https://gce-backend.onrender.com/api/v1/user", {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify(values),
-    //   });
-    //   if (!response.ok) {
-    //     throw new Error("Network response was not ok");
-    //   }
-    //   const result = await response.json();
-    //   console.log(result);
-    // } catch (error) {
-    //   console.error("Error:", error);
-    // }
+    
+    const dataWithIds = {
+      name : values.name, 
+      email : values.email ,
+      address : values.address,
+      gender : values.gender,
+      password : values.password,
+      referalCode : values.referralcode ,
+      countryId : countries.find((item) => item.cntry_name === values.country)?.cntry_id,
+      stateId : states.find((item) => item.st_name === values.state)?.st_id,
+      districtId : districts.find((item) => item.dis_name === values.district)?.dis_id,
+      mobileNumber : values.mobile,
+      userPhoto : '',
+      profileDescription : '',
+     
+  
+    };
+
+    console.log(dataWithIds);
+    
+    try {
+      const response = await fetch("https://gce-backend.onrender.com/api/v1/user/"+group_id+"/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(dataWithIds),
+      });
+      if (!response.ok) {
+        console.log(response);
+        throw new Error("Network response was not ok");
+      }
+      alert("Registered");
+      const result = await response.json();
+      console.log(result);
+    } catch (error) {
+      console.error("Error:", error);
+    }
   }
 
   return (

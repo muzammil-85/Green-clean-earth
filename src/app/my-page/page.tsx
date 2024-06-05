@@ -2,13 +2,22 @@
 import Footer from "@/components/footer";
 import Navigationbar from "@/components/navigationBar";
 import { CircleUser, Images, List, UserRoundCheck } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ProfileTab from "./profile_tab";
 import MyUploadsTab from "./my_uploads_tab";
 import ActivitiesTab from "./activities_tab";
+import Cookies from 'js-cookie';
 
 const MyPage = () => {
     const [openTab, setOpenTab] = useState(1);
+    const [token, setToken] = useState('');
+
+  useEffect(() => {
+    const storedToken = Cookies.get('token');
+    console.log(storedToken);
+    // setToken(storedToken);
+  }, []);
+
     return (
       <div className="bg-green-50">
         <Navigationbar />
@@ -58,6 +67,9 @@ const MyPage = () => {
                   <Images size={28} strokeWidth={1.75} /> My Uploads
                 </a>
               </li>
+
+
+              
               <li className="-mb-px mr-2 last:mr-0 flex-auto text-center">
                 <a
                   className={
@@ -74,6 +86,9 @@ const MyPage = () => {
                   href="#link3"
                   role="tablist"
                 >
+
+
+
                   <List size={28} strokeWidth={1.75} />  Activities
                 </a>
               </li>

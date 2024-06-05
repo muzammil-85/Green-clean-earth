@@ -2,6 +2,8 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
 import { useForm } from "react-hook-form"
+import axios from "axios";
+
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -68,9 +70,59 @@ export function FormUploadActivities() {
 },
   })
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values)
+
+async function onSubmit(values: z.infer<typeof formSchema>) {
+  const apidata = {
+    name: values.name,
+category : 1, 
+subCategory : values.sub_category, 
+address : values.address,  
+activityTitle :values.activity_title, 
+socialMediaLink : values.social_link,
+activityThumbnail : ''
+
+  };
+  console.log(apidata);
+  try {
+    const response = await fetch(
+      "https://gce-backend.onrender.com/api/v1/group/",
+      {
+        method: "GET",
+        
+      }
+    );
+    if (!response.ok) {
+      console.log(response);
+      throw new Error("Network response was not ok");
+    }
+    const result = await response.json();
+    console.log(result);
+  } catch (error) {
+    console.error("Error:", error);
   }
+      // try {
+
+      //   const response = await axios.get(
+      //     "https://gce-backend.onrender.com/api/v1/coordinator/all",
+          
+      //   );
+
+      //   if (response.status !== 200) {
+      //   console.log(response);
+
+      //     throw new Error("Network response was not ok");
+      //   }
+        
+      //   console.log(response);
+
+      //   const result = response.data;
+      //   console.log(result);
+      // } catch (error) {
+      //   console.error("Error:", error);
+      // }
+  }
+
+
 
   return (
     <Form {...form}>
