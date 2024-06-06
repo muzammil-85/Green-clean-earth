@@ -67,19 +67,19 @@ export default function Register() {
   })
   useEffect(() => {
     async function fetchData() {
-      const countryResponse = await fetch("https://gce-backend.onrender.com/api/v1/country");
+      const countryResponse = await fetch("http://localhost:3000/api/v1/country");
       const countryData = await countryResponse.json();
       setCountries(countryData.country);
 
-      const stateResponse = await fetch("https://gce-backend.onrender.com/api/v1/state");
+      const stateResponse = await fetch("http://localhost:3000/api/v1/state");
       const stateData = await stateResponse.json();
       setStates(stateData.state);
 
-      const districtResponse = await fetch("https://gce-backend.onrender.com/api/v1/district");
+      const districtResponse = await fetch("http://localhost:3000/api/v1/district");
       const districtData = await districtResponse.json();
       setDistricts(districtData.district);
 
-      const categoryResponse = await fetch("https://gce-backend.onrender.com/api/v1/category");
+      const categoryResponse = await fetch("http://localhost:3000/api/v1/category");
       const categoryData = await categoryResponse.json();
       setCategory(categoryData.category);
     }
@@ -90,7 +90,7 @@ export default function Register() {
     async function fetchLsgdData() {
       if (selectedDistrict) {
         console.log(selectedDistrict);
-        const lsgResponse = await fetch(`https://gce-backend.onrender.com/api/v1/lsg/${selectedDistrict}`);
+        const lsgResponse = await fetch(`http://localhost:3000/api/v1/lsg/${selectedDistrict}`);
         const lsgData = await lsgResponse.json();
         setLsgd(lsgData.district);
       }
@@ -112,7 +112,7 @@ async function onSubmit(values: z.infer<typeof formSchema>) {
   console.log(dataWithIds);
 
   try {
-    const response = await fetch("https://gce-backend.onrender.com/api/v1/coordinator/register", {
+    const response = await fetch("http://localhost:3000/api/v1/coordinator/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

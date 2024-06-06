@@ -38,29 +38,25 @@ export default function UserLogin() {
 
     console.log(apidata);
     try {
-      const response = await axios.post(
-        "https://gce-backend.onrender.com/api/v1/user/login",
-        apidata,
+      const response = await fetch(
+        "http://localhost:3000/api/v1/user/login",
         {
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          withCredentials: true, // Include cookies in the request
+          body: JSON.stringify(apidata),
         }
       );
-
-      if (response.status !== 200) {
+      if (!response.ok) {
+        console.log(response);
         throw new Error("Network response was not ok");
       }
-
-      console.log(response);
-
-      const result = response.data;
+      const result = await response.json();
       const id = result.data.id;
       if (id) {
-        // router.push("/my-page?id=" + id);
+        router.push("/my-page?id=" + id + "&token=" + result.data.token);
       }
-
       console.log(result);
     } catch (error) {
       console.error("Error:", error);

@@ -1,3 +1,6 @@
+import axios from "axios";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 
 interface TreeDetails {
@@ -24,10 +27,10 @@ const treeDetails = [
 const TreeDetailsCard: React.FC<TreeDetailsCardProps> = ({ tree }) => {
   return (
     <div className="bg-white p-4 rounded-lg overflow-hidden border shadow transform transition-transform hover:border-green-600 hover:shadow-lg">
-      <img className="w-full h-48 object-cover" src={tree.image} alt={tree.name} />
+      <img className="w-full h-48 object-cover" src={tree.up_file} alt={tree.name} />
       <div className="p-4">
-        <h2 className="text-xl font-bold mb-2">{tree.name}</h2>
-        <p className="text-gray-600">{tree.description}</p>
+        <h2 className="text-xl font-bold mb-2">{tree.up_tree_name}</h2>
+        <p className="text-gray-600">{tree.up_date}</p>
       </div>
     </div>
   );
@@ -38,12 +41,33 @@ const TreeDetailsCard: React.FC<TreeDetailsCardProps> = ({ tree }) => {
 
 
 export default function MyUploadsTab() {
+  const [upload, setUpload] = useState([]);
+  const searchParams = useSearchParams();
+  const token = searchParams.get("token");
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const header = { Authorization: `Bearer ${token}` }
+        const response = await axios.get("http://localhost:3000/api/v1/uploads/me", 
+        { headers: header }
+      );
+        const uploadData = response.data;
+        console.log(uploadData.Uploads);
+        setUpload(uploadData.Uploads);
+        
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
+    fetchCategories();
+  }, [token]);
     return (
         <div className="">
           <div className="p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {treeDetails.map((tree, index) => (
+            {upload ? (upload.map((tree, index) => (
               <TreeDetailsCard key={index} tree={tree} />
-            ))}
+            ))) : "No Tree Details Found"}
     </div>
         </div>
     )

@@ -9,18 +9,18 @@ const Navigationbar = () => {
     {
       id: 1,
       name: "Home",
-      link: "https://greencleanearth.org/",
+      link: "https://www.greencleanearth.org/",
     },
     {
       id: 2,
       name: "Projects",
       link: "https://greencleanearth.org/projects",
     },
-    {
-      id: 3,
-      name: "Dashboard",
-      link: "/user-dash-home",
-    },
+    // {
+    //   id: 3,
+    //   name: "Dashboard",
+    //   link: "/user-dash-home",
+    // },
     {
       id:4,
       name:"Participant list",
@@ -29,7 +29,7 @@ const Navigationbar = () => {
     {
       id: 5,
       name: "Login",
-      link: "/user-login",
+      link: "/login",
     },
     {
       id: 6,
@@ -40,6 +40,16 @@ const Navigationbar = () => {
       id: 7,
       name: "Register",
       link: "/register",
+    },
+    {
+      id: 8,
+      name: "About Us",
+      link: "https://greencleanearth.org/about",
+    },
+    {
+      id: 9,
+      name: "Contact Us",
+      link: "https://greencleanearth.org/contact-us",
     },
   ];
 

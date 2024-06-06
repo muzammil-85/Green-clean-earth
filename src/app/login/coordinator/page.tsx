@@ -34,7 +34,7 @@ export default function CoordinatorLogin() {
     console.log(values);
     try {
       const response = await fetch(
-        "https://gce-backend.onrender.com/api/v1/coordinator/login",
+        "http://localhost:3000/api/v1/coordinator/login",
         {
           method: "POST",
           headers: {

@@ -17,7 +17,7 @@ export default function CoordinatorDashBoard() {
     console.log(values);
     try {
       const response = await fetch(
-        "https://gce-backend.onrender.com/api/v1/coordinator/"+co_id,
+        "http://localhost:3000/api/v1/coordinator/"+co_id,
         {
           method: "POST",
           headers: {

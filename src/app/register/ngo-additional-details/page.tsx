@@ -48,7 +48,7 @@ export default function NgoAdditionalDetails() {
     console.log(dataWithIds);
     try {
       const response = await fetch(
-        "https://gce-backend.onrender.com/api/v1/group/ngo/register",
+        "http://localhost:3000/api/v1/group/ngo/register",
         {
           method: "POST",
           headers: {

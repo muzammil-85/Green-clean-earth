@@ -99,7 +99,7 @@ const MultiSelectZod = () => {
     console.log(dataWithIds);
   
     try {
-      const response = await fetch("https://gce-backend.onrender.com/api/v1/group/school/register", {
+      const response = await fetch("http://localhost:3000/api/v1/group/school/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
