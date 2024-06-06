@@ -14,6 +14,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { baseUrl } from "@/app/api/status/route";
+
 import {
   Select,
   SelectContent,
@@ -50,15 +52,15 @@ export default function UserRegister() {
 
   useEffect(() => {
     async function fetchData() {
-      const countryResponse = await fetch("http://localhost:3000/api/v1/country");
+      const countryResponse = await fetch(`${baseUrl}/country`);
       const countryData = await countryResponse.json();
       setCountries(countryData.country);
 
-      const stateResponse = await fetch("http://localhost:3000/api/v1/state");
+      const stateResponse = await fetch(`${baseUrl}/state`);
       const stateData = await stateResponse.json();
       setStates(stateData.state);
 
-      const districtResponse = await fetch("http://localhost:3000/api/v1/district");
+      const districtResponse = await fetch(`${baseUrl}/district`);
       const districtData = await districtResponse.json();
       setDistricts(districtData.district);
     }
@@ -92,7 +94,7 @@ export default function UserRegister() {
     console.log(dataWithIds);
     
     try {
-      const response = await fetch("http://localhost:3000/api/v1/user/"+group_id+"/register", {
+      const response = await fetch(`${baseUrl}/user/${group_id}/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

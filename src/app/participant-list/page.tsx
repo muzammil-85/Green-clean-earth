@@ -4,13 +4,14 @@ import ParticipantCard from "./card";
 import Navigationbar from "@/components/navigationBar";
 import Footer from "@/components/footer";
 import { Link } from "lucide-react";
+import { baseUrl } from "@/app/api/status/route";
 
 export default function ParticipantList() {
   const [participants, setParticipants] = useState([]);
 
   useEffect(() => {
     async function fetchData() {
-      const response = await fetch("http://localhost:3000/api/v1/uploads/all");
+      const response = await fetch(`${baseUrl}/uploads/all`);
       const data = await response.json();
       console.log(data.Uploads);
       setParticipants(data.Uploads);

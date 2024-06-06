@@ -2,6 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
 import { useForm } from "react-hook-form"
 import axios from "axios";
+import { baseUrl } from "@/app/api/status/route";
 
 import { Button } from "@/components/ui/button"
 import {
@@ -14,7 +15,6 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-
 import {
   Select,
   SelectContent,
@@ -58,6 +58,7 @@ const formSchema = z.object({
 export function FormUploadActivities() {
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
+  const id = searchParams.get("id");
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
@@ -78,7 +79,7 @@ export function FormUploadActivities() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/api/v1/activity_category");
+        const response = await axios.get(`${baseUrl}/activity_category`);
         console.log(response.data.activity_category);
         setCategories(response.data.activity_category);
       } catch (error) {
@@ -88,7 +89,7 @@ export function FormUploadActivities() {
 
     const fetchSubCategories = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/api/v1/activity_sub_category");
+        const response = await axios.get(`${baseUrl}/activity_sub_category`);
         setSubCategories(response.data.activity_sub_category);
       } catch (error) {
         console.error("Error fetching subcategories:", error);
@@ -100,21 +101,23 @@ export function FormUploadActivities() {
   }, []);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const category = categories.find((item) => item.activity_category === values.category)?.activity_category_id
-    const activityData = {
-      name: values.name,
-      category: category,
-      subCategory: values.sub_category,
-      address: values.address,
-      activityTitle: values.activity_title,
-      shortDesc: values.short_desc,
-      socialMediaLink: values.social_link,
-      activityThumbnail: selectedImage?.name,
-    };
-    console.log(activityData);
+    const category = categories.find((item) => item.activity_category === values.category)?.activity_category_id;
+    
+    const formData = new FormData();
+    formData.append("name", values.name);
+    formData.append("category", category.toString());
+    formData.append("subCategory", values.sub_category);
+    formData.append("address", values.address);
+    formData.append("activityTitle", values.activity_title);
+    formData.append("shortDesc", values.short_desc);
+    formData.append("socialMediaLink", values.social_link);
+    if (selectedImage) {
+      formData.append("activityThumbnail", selectedImage);
+    }
+    console.log(formData);
 
     try {
-      const response = await uploadActivityData(activityData, token);
+      const response = await uploadActivityData(formData, token, id);
       console.log("Response:", response);
     } catch (error) {
       console.error("Error:", error);

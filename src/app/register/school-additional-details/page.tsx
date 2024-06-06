@@ -27,6 +27,7 @@ import { cn } from "@/lib/utils";
 import { BsImages, BsPaperclip } from "react-icons/bs";
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { baseUrl } from "@/app/api/status/route";
 
 const MAX_FILE_SIZE = 1024 * 1024 * 5;
 const ACCEPTED_IMAGE_MIME_TYPES = [
@@ -99,7 +100,7 @@ const MultiSelectZod = () => {
     console.log(dataWithIds);
   
     try {
-      const response = await fetch("http://localhost:3000/api/v1/group/school/register", {
+      const response = await fetch(`${baseUrl}/group/school/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

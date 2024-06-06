@@ -5,6 +5,7 @@ import { UserPlus } from "lucide-react";
 import Link from 'next/link'
 import { DialogAddUser } from "./dialog-add-user";
 import { useSearchParams } from "next/navigation";
+import { baseUrl } from "@/app/api/status/route";
 
 export default function CoordinatorDashBoard() {
 
@@ -17,7 +18,7 @@ export default function CoordinatorDashBoard() {
     console.log(values);
     try {
       const response = await fetch(
-        "http://localhost:3000/api/v1/coordinator/"+co_id,
+        `${baseUrl}/coordinator/${co_id}`,
         {
           method: "POST",
           headers: {

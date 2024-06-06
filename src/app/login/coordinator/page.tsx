@@ -15,6 +15,7 @@ import {
 import { Input } from "@/components/ui/input"
 import NavigationBar from "@/components/navigationBar";
 import Footer from "@/components/footer";
+import { baseUrl } from "@/app/api/status/route";
 
 import { useRouter } from 'next/navigation'
 const formSchema = z.object({"username":z.string().min(3).max(255),"password":z.string().min(1).max(255)})
@@ -34,7 +35,7 @@ export default function CoordinatorLogin() {
     console.log(values);
     try {
       const response = await fetch(
-        "http://localhost:3000/api/v1/coordinator/login",
+        `${baseUrl}/coordinator/login`,
         {
           method: "POST",
           headers: {

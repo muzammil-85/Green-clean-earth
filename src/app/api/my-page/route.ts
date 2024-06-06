@@ -1,10 +1,13 @@
+import axios from "axios";
+import { baseUrl } from "@/app/api/status/route";
+
 export const fetchUserData = async (user_id, token) => {
     console.log('Fetching user');
     const headersList = {
       "Authorization": `Bearer ${token}`,
     };
     
-    const response = await fetch(`http://localhost:3000/api/v1/user/${user_id}`, { 
+    const response = await fetch(`${baseUrl}/user/${user_id}`, { 
       method: "GET",
       headers: headersList
     });
@@ -14,28 +17,19 @@ export const fetchUserData = async (user_id, token) => {
   };
   
 
-  export async function uploadActivityData(formData,token) {
-    const headersList = {
-        "Authorization": `Bearer ${token}`,
-      };
+  const uploadActivityData = async (formData: FormData, token: string | null, id: string | null) => {
     try {
-      const response = await fetch("http://localhost:3000/api/v1/activity/new", {
-        method: "POST",
-        body: formData,
-        headers: headersList
+      const response = await axios.post(`${baseUrl}/upload_activity?token=${token}&id=${id}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
-  
-      if (!response.ok) {
-        throw new Error(`Error: ${response.statusText}`);
-      }
-  
-      return await response.json();
+      return response.data;
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Error uploading activity data:", error);
       throw error;
     }
-  }
-
+  };
 
   export const fetchActivityData = async (token) => {
     console.log('Fetching user');
@@ -43,7 +37,7 @@ export const fetchUserData = async (user_id, token) => {
       "Authorization": `Bearer ${token}`,
     };
     
-    const response = await fetch(`http://localhost:3000/api/v1/activity/all`, { 
+    const response = await fetch(`${baseUrl}/activity/all`, { 
       method: "GET",
       headers: headersList
     });

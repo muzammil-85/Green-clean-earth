@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { baseUrl } from "@/app/api/status/route";
 
 
 interface TreeDetails {
@@ -48,7 +49,7 @@ export default function MyUploadsTab() {
     const fetchCategories = async () => {
       try {
         const header = { Authorization: `Bearer ${token}` }
-        const response = await axios.get("http://localhost:3000/api/v1/uploads/me", 
+        const response = await axios.get(`${baseUrl}/uploads/me`, 
         { headers: header }
       );
         const uploadData = response.data;

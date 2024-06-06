@@ -18,6 +18,7 @@ import Footer from "@/components/footer";
 import { useRouter } from "next/navigation";
 import axios from 'axios';
 const formSchema = z.object({ "mobile": z.coerce.number().lte(9999999999), "password": z.string().min(1).max(255) })
+import { baseUrl } from "@/app/api/status/route";
 
 export default function UserLogin() {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -39,7 +40,7 @@ export default function UserLogin() {
     console.log(apidata);
     try {
       const response = await fetch(
-        "http://localhost:3000/api/v1/user/login",
+        `${baseUrl}/user/login`,
         {
           method: "POST",
           headers: {

@@ -13,6 +13,8 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { baseUrl } from "@/app/api/status/route";
+
 import { Input } from "@/components/ui/input";
 
 import { useEffect, useState } from "react";
@@ -48,7 +50,7 @@ export default function NgoAdditionalDetails() {
     console.log(dataWithIds);
     try {
       const response = await fetch(
-        "http://localhost:3000/api/v1/group/ngo/register",
+        `${baseUrl}/group/ngo/register`,
         {
           method: "POST",
           headers: {

@@ -1,4 +1,5 @@
 "use client";
+import { baseUrl } from "@/app/api/status/route";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 
@@ -32,7 +33,7 @@ const Table: React.FC<TableProps> = ({ headings, data }) => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/api/v1/activity_category");
+        const response = await axios.get(`${baseUrl}/activity_category`);
         const categoriesData = response.data.activity_category;
         const categoriesMap = categoriesData.reduce((acc, category) => {
           acc[category.activity_category_id] = category.activity_category;
