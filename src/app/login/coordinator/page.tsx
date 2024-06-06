@@ -32,6 +32,8 @@ export default function CoordinatorLogin() {
   })
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+
+    
     console.log(values);
     try {
       const response = await fetch(
@@ -41,8 +43,10 @@ export default function CoordinatorLogin() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(values),
-          credentials: "include", // Include cookies in the request
+          body: JSON.stringify({
+            username: values.username,
+            packages: values.password
+          }), // Include cookies in the request
         }
       );
   
@@ -58,21 +62,6 @@ export default function CoordinatorLogin() {
           // Redirect to the dashboard
           router.push("/coordinator-dashboard?id=" + id);
         }
-  
-      // Check for the Set-Cookie header
-      const setCookieHeader = await response.headers.get("Set-Cookie");
-      console.log(setCookieHeader);
-
-      if (setCookieHeader) {
-        // Extract the token from the Set-Cookie header
-        const tokenCookie = setCookieHeader.split(";")[0];
-        const token = tokenCookie.split("=")[1];
-  
-        // Store the token in a cookie
-        document.cookie = `token=${token}; path=/`;
-        console.log(token);
-        // You can also store the token in a state management system
-      }
   
       console.log(result);
     } catch (error) {

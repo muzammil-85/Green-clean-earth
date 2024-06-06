@@ -47,15 +47,15 @@ const form = z.object({
   total_classes:z.coerce.number().gte(1).lte(999),
   list_of_classes:z.string().min(3).max(255),
   your_coordinator:z.string().min(3).max(255),
-  image: z
-          .any()
-          .refine((files) => {
-          return files?.[0]?.size <= MAX_FILE_SIZE;
-          }, `Max image size is 5MB.`)
-          .refine(
-          (files) => ACCEPTED_IMAGE_MIME_TYPES.includes(files?.[0]?.type),
-          "Only .jpg, .jpeg, .png and .webp formats are supported."
-          ),
+  // image: z
+  //         .any()
+  //         .refine((files) => {
+  //         return files?.[0]?.size <= MAX_FILE_SIZE;
+  //         }, `Max image size is 5MB.`)
+  //         .refine(
+  //         (files) => ACCEPTED_IMAGE_MIME_TYPES.includes(files?.[0]?.type),
+  //         "Only .jpg, .jpeg, .png and .webp formats are supported."
+  //         ),
   phoneNUmber: z.coerce.number(),
   referral_name: z.string().min(3),
 });
@@ -72,7 +72,7 @@ const clubs_options = [
 
 
 const MultiSelectZod = () => {
-  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  // const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const multiForm = useForm<Form>({
     resolver: zodResolver(form),
     defaultValues:
@@ -89,15 +89,16 @@ const MultiSelectZod = () => {
 
 
   const onSubmit = async (data: Form) => {
-    const dataWithIds = {
-     groupId: parseInt(group_id),
-     clubs :  data.value.join(','),
-     list_of_classes : data.list_of_classes,
-     no_of_students : data.no_of_students,
-     phoneNUmber : data.phoneNUmber
- 
-    };
-    console.log(dataWithIds);
+    // Create a new FormData object
+      const formData = new FormData();
+
+      // Append each property to the FormData object
+      formData.append('groupId', parseInt(group_id));
+      formData.append('clubs', data.value.join(','));
+      formData.append('list_of_classes', data.list_of_classes);
+      formData.append('no_of_students', data.no_of_students);
+      formData.append('phoneNUmber', data.phoneNUmber);
+      // formData.append('image', selectedImage);
   
     try {
       const response = await fetch(`${baseUrl}/group/school/register`, {
@@ -105,7 +106,7 @@ const MultiSelectZod = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(dataWithIds),
+        body: formData,
       });
   
       if (!response.ok) {
@@ -224,68 +225,68 @@ const MultiSelectZod = () => {
           )}
           />
 
-<div className={cn("flex md:flex-row w-[100%] gap-4 flex-col")}>
-            <div className="flex w-[100%] gap-2 flex-col my-4">
-              <FormLabel>Upload plant image</FormLabel>
-              <span className="text-xs text-gray-400">Maximum file size 5MB</span>
-              <div className={`flex w-[100%] gap-4 p-4 rounded border border-neutral-200 flex-col items-center md:flex-row md:justify-between md:items-center`}>
-                <div className={`flex  md:flex-[1] h-[fit-content] md:p-4 md:justify-between md:flex-row`}>
-                  {selectedImage ? (
-                    <div className="md:max-w-[200px]">
-                      <img
-                        src={URL.createObjectURL(selectedImage)}
-                        alt="Selected"
-                      />
-                    </div>
-                  ) : (
-                    <div className="inline-flex items-center justify-between">
-                      <div className="p-3 bg-slate-200  justify-center items-center flex">
-                        <BsImages size={56} />
-                      </div>
-                    </div>
-                  )}
-                </div> 
-                
-                <FormField
-                  control={multiForm.control}
-                  name="image"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <Button size="lg" type="button" className="bg-green-100 hover:bg-green-300 border-2 border-green-600 text-green-600">
-                          <input
-                            type="file"
-                            className="hidden"
-                            id="fileInput"
-                            accept="image/*"
-                            onBlur={field.onBlur}
-                            name={field.name}
-                            onChange={(e) => {
-                              field.onChange(e.target.files);
-                              setSelectedImage(e.target.files?.[0] || null);
-                            }}
-                            ref={field.ref}
-                          />
-                          <label
-                            htmlFor="fileInput"
-                            className="text-neutral-90  rounded-md cursor-pointer inline-flex items-center"
-                          >
-                            <BsPaperclip />
-                            <span className="whitespace-nowrap">
-                              Choose your image
-                            </span>
-                          </label>
-                        </Button>
-                      </FormControl>
-                      
+          {/* <div className={cn("flex md:flex-row w-[100%] gap-4 flex-col")}>
+                      <div className="flex w-[100%] gap-2 flex-col my-4">
+                        <FormLabel>Upload plant image</FormLabel>
+                        <span className="text-xs text-gray-400">Maximum file size 5MB</span>
+                        <div className={`flex w-[100%] gap-4 p-4 rounded border border-neutral-200 flex-col items-center md:flex-row md:justify-between md:items-center`}>
+                          <div className={`flex  md:flex-[1] h-[fit-content] md:p-4 md:justify-between md:flex-row`}>
+                            {selectedImage ? (
+                              <div className="md:max-w-[200px]">
+                                <img
+                                  src={URL.createObjectURL(selectedImage)}
+                                  alt="Selected"
+                                />
+                              </div>
+                            ) : (
+                              <div className="inline-flex items-center justify-between">
+                                <div className="p-3 bg-slate-200  justify-center items-center flex">
+                                  <BsImages size={56} />
+                                </div>
+                              </div>
+                            )}
+                          </div> 
+                          
+                          <FormField
+                            control={multiForm.control}
+                            name="image"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormControl>
+                                  <Button size="lg" type="button" className="bg-green-100 hover:bg-green-300 border-2 border-green-600 text-green-600">
+                                    <input
+                                      type="file"
+                                      className="hidden"
+                                      id="fileInput"
+                                      accept="image/*"
+                                      onBlur={field.onBlur}
+                                      name={field.name}
+                                      onChange={(e) => {
+                                        field.onChange(e.target.files);
+                                        setSelectedImage(e.target.files?.[0] || null);
+                                      }}
+                                      ref={field.ref}
+                                    />
+                                    <label
+                                      htmlFor="fileInput"
+                                      className="text-neutral-90  rounded-md cursor-pointer inline-flex items-center"
+                                    >
+                                      <BsPaperclip />
+                                      <span className="whitespace-nowrap">
+                                        Choose your image
+                                      </span>
+                                    </label>
+                                  </Button>
+                                </FormControl>
+                                
 
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-            </div>
-</div>        
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                      </div>
+          </div>         */}
 
 
 

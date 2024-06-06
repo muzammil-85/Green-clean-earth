@@ -45,6 +45,7 @@ export default function MyUploadsTab() {
   const [upload, setUpload] = useState([]);
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
+  const id = searchParams.get("id");
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -65,6 +66,12 @@ export default function MyUploadsTab() {
   }, [token]);
     return (
         <div className="">
+          <a
+          href={`/upload-plant?id=${id}&token=${token}`}
+          className="float-right place-items-center w-25 bg-green-100 text-green-600  py-2 px-4 my-2 border-2 border-green-600 rounded-md hover:bg-green-600 hover:text-white"
+        >
+          Upload Plant
+        </a>
           <div className="p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {upload ? (upload.map((tree, index) => (
               <TreeDetailsCard key={index} tree={tree} />

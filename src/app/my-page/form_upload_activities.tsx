@@ -44,7 +44,7 @@ const formSchema = z.object({
   activity_title: z.string().max(255),
   short_desc: z.string().max(255),
   social_link: z.string().max(255),
-  adImage: z
+  activityThumbnail: z
     .any()
     .refine((files) => {
       return files?.[0]?.size <= MAX_FILE_SIZE;
@@ -102,10 +102,10 @@ export function FormUploadActivities() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const category = categories.find((item) => item.activity_category === values.category)?.activity_category_id;
-    
+    console.log("Category:", category);
     const formData = new FormData();
     formData.append("name", values.name);
-    formData.append("category", category.toString());
+    formData.append("category", parseInt(category));
     formData.append("subCategory", values.sub_category);
     formData.append("address", values.address);
     formData.append("activityTitle", values.activity_title);
@@ -114,7 +114,7 @@ export function FormUploadActivities() {
     if (selectedImage) {
       formData.append("activityThumbnail", selectedImage);
     }
-    console.log(formData);
+    console.log(typeof(selectedImage));
 
     try {
       const response = await uploadActivityData(formData, token, id);
@@ -270,7 +270,7 @@ export function FormUploadActivities() {
               </div>
               <FormField
                 control={form.control}
-                name="adImage"
+                name="activityThumbnail"
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>

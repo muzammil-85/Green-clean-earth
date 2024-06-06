@@ -6,14 +6,15 @@ import { DialogAddUser } from "./coordinator-dashboard/dialog-add-user";
 import Register from "./register/page";
 import UserRegister from "./user-register/page";
 import UserLogin from "./login/page";
+import UploadPlant from "./upload-plant/page";
 
 export default function Home() {
   return (
     <main>
       <h2>Green Clean Earth</h2>
-      <UserLogin/>
+      {/* <UploadPlant/> */}
       {/* <CoordinatorLogin/> */}
-      {/* <CoordinatorDashBoard/> */}
+      <CoordinatorDashBoard/>
     </main>
   );
 }

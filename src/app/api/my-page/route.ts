@@ -17,14 +17,16 @@ export const fetchUserData = async (user_id, token) => {
   };
   
 
-  const uploadActivityData = async (formData: FormData, token: string | null, id: string | null) => {
+  export const uploadActivityData = async (data: any, token: string | null, id: string | null) => {
     try {
-      const response = await axios.post(`${baseUrl}/upload_activity?token=${token}&id=${id}`, formData, {
+      const response = await fetch(`${baseUrl}/activity/new`, { 
+        method: "POST",
+        body: data,
         headers: {
-          "Content-Type": "multipart/form-data",
+          "Authorization": `Bearer ${token}`,
         },
       });
-      return response.data;
+      return response.json();
     } catch (error) {
       console.error("Error uploading activity data:", error);
       throw error;

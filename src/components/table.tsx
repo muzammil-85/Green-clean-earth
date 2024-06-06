@@ -1,5 +1,5 @@
 "use client";
-import { baseUrl } from "@/app/api/status/route";
+import { baseUrl, imageURL } from "@/app/api/status/route";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 
@@ -48,7 +48,6 @@ const Table: React.FC<TableProps> = ({ headings, data }) => {
 
     fetchCategories();
   }, []);
-  
   return (
     <div className="overflow-scroll">
       <table className="table-auto md:w-full md:table-fixed">
@@ -80,7 +79,8 @@ const Table: React.FC<TableProps> = ({ headings, data }) => {
               <td>{d.participant_name}</td>
               <td>{d.activity_title}{d.activity_description}</td>
               <td>
-                <img src={`/thumbnails/${d.activity_thumbnail}`} alt="Thumbnail" />
+                <img src={`${imageURL}${d.activity_thumbnail}`} alt="Thumbnail" />
+                {d.activity_thumbnail}
               </td>
               <td>{d.activity_value}</td>
             </tr>

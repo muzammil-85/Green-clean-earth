@@ -14,11 +14,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { BsImages, BsPaperclip } from "react-icons/bs";
 import { IoSendOutline } from "react-icons/io5";
 import * as z from "zod";
+import { uploadPlantData } from "../api/upload-plant/route";
 const MAX_FILE_SIZE = 1024 * 1024 * 5;
 const ACCEPTED_IMAGE_MIME_TYPES = [
   "image/jpeg",
@@ -31,7 +33,7 @@ const formSchema = z.object({
   uname:z.string().max(255),
   pname:z.string().max(255),
   tname:z.string().max(255),  
-  adImage: z
+  image: z
     .any()
     .refine((files) => {
       return files?.[0]?.size <= MAX_FILE_SIZE;
@@ -44,16 +46,32 @@ const formSchema = z.object({
 export type ContactFormData = z.infer<typeof formSchema>;
 
 export default function UploadPlant() {
+  const searchParams = useSearchParams();
+  const token = searchParams.get("token");
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const form = useForm<ContactFormData>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      adImage: undefined,
+    defaultdata: {
+      image: undefined,
     },
   });
-
   const onSubmit = async (data: ContactFormData) => {
     console.log(data);
+    const formData = new FormData();
+    formData.append("name", data.uname);
+    formData.append("planterName", data.pname);
+    formData.append("treeName", data.tname);
+    if (selectedImage) {
+      formData.append("image", selectedImage);
+    }
+
+    try {
+      const response = await uploadPlantData(formData, token);
+      console.log("Response:", response);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+
   };
   return (
     <div className="bg-green-50">
@@ -119,7 +137,7 @@ export default function UploadPlant() {
                 
                 <FormField
                   control={form.control}
-                  name="adImage"
+                  name="image"
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
