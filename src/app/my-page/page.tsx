@@ -7,17 +7,16 @@ import ProfileTab from "./profile_tab";
 import MyUploadsTab from "./my_uploads_tab";
 import ActivitiesTab from "./activities_tab";
 import Cookies from 'js-cookie';
+import { useRouter } from "next/navigation";
 
 const MyPage = () => {
+  const router = useRouter();
+  const token = Cookies.get('token')
+  if (!token) {
+    // Redirect to the login page
+    router.push("/login");
+  }
     const [openTab, setOpenTab] = useState(1);
-    const [token, setToken] = useState('');
-
-  useEffect(() => {
-    const storedToken = Cookies.get('token');
-    console.log(storedToken);
-    // setToken(storedToken);
-  }, []);
-
     return (
       <div className="bg-green-50">
         <Navigationbar />
@@ -97,13 +96,13 @@ const MyPage = () => {
               <div className="px-4 py-5 flex-auto">
                 <div className="tab-content tab-space">
                   <div className={openTab === 1 ? "block" : "hidden"} id="link1">
-                    <ProfileTab />
+                    <ProfileTab token={token} />
                   </div>
                   <div className={openTab === 2 ? "block" : "hidden"} id="link2">
-                    <MyUploadsTab />
+                    <MyUploadsTab token={token} />
                   </div>
                   <div className={openTab === 3 ? "block" : "hidden"} id="link3">
-                    <ActivitiesTab />
+                    <ActivitiesTab token={token} />
                   </div>
                 </div>
               </div>

@@ -55,9 +55,8 @@ const formSchema = z.object({
     ),
 })
 
-export function FormUploadActivities() {
+export function FormUploadActivities({token}) {
   const searchParams = useSearchParams();
-  const token = searchParams.get("token");
   const id = searchParams.get("id");
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [categories, setCategories] = useState([]);
@@ -80,7 +79,7 @@ export function FormUploadActivities() {
     const fetchCategories = async () => {
       try {
         const response = await axios.get(`${baseUrl}/activity_category`);
-        console.log(response.data.activity_category);
+        
         setCategories(response.data.activity_category);
       } catch (error) {
         console.error("Error fetching categories:", error);
@@ -102,7 +101,7 @@ export function FormUploadActivities() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const category = categories.find((item) => item.activity_category === values.category)?.activity_category_id;
-    console.log("Category:", category);
+    
     const formData = new FormData();
     formData.append("name", values.name);
     formData.append("category", parseInt(category));
@@ -114,11 +113,9 @@ export function FormUploadActivities() {
     if (selectedImage) {
       formData.append("activityThumbnail", selectedImage);
     }
-    console.log(typeof(selectedImage));
 
     try {
       const response = await uploadActivityData(formData, token, id);
-      console.log("Response:", response);
     } catch (error) {
       console.error("Error:", error);
     }

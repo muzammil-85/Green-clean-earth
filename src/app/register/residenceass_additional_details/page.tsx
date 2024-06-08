@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/select"
 import NavigationBar from "@/components/navigationBar";
 import Footer from "@/components/footer";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams,useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 const formSchema = z.object(
   {
@@ -88,7 +88,7 @@ export default function ResidenceAssAdditionalDetails() {
 const searchParams = useSearchParams();
 
 const group_id = searchParams.get("group_id");
-
+const router = useRouter()
 const onSubmit = async (values: z.infer<typeof formSchema>) => {
   console.log(values);
   const dataWithIds = {
@@ -118,6 +118,9 @@ const onSubmit = async (values: z.infer<typeof formSchema>) => {
     }
 
     const result = await response.json();
+    if (result) {
+      router.push("/login");
+    }
     console.log(result);
     
     // router.push("/register/promoter-additional-details?group_id=" + group_id);

@@ -48,6 +48,13 @@ const Table: React.FC<TableProps> = ({ headings, data }) => {
 
     fetchCategories();
   }, []);
+
+  function removejpg(path: string) {
+    let p = path.replace('.jpg', '');
+    let img = imageURL+p;
+    return img;
+  }
+
   return (
     <div className="overflow-scroll">
       <table className="table-auto md:w-full md:table-fixed">
@@ -79,8 +86,7 @@ const Table: React.FC<TableProps> = ({ headings, data }) => {
               <td>{d.participant_name}</td>
               <td>{d.activity_title}{d.activity_description}</td>
               <td>
-                <img src={`${imageURL}${d.activity_thumbnail}`} alt="Thumbnail" />
-                {d.activity_thumbnail}
+                <img src={removejpg(d.activity_thumbnail)} alt="Thumbnail" />
               </td>
               <td>{d.activity_value}</td>
             </tr>

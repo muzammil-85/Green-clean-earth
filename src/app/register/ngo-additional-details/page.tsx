@@ -15,6 +15,8 @@ import {
 } from "@/components/ui/form";
 import { baseUrl } from "@/app/api/status/route";
 
+import { useRouter } from 'next/navigation'
+
 import { Input } from "@/components/ui/input";
 
 import { useEffect, useState } from "react";
@@ -40,7 +42,7 @@ export default function NgoAdditionalDetails() {
     resolver: zodResolver(formSchema),
     defaultValues: {},
   });
-
+  const router = useRouter()
   async function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
     const dataWithIds = {
@@ -64,6 +66,9 @@ export default function NgoAdditionalDetails() {
         throw new Error("Network response was not ok");
       }
       const result = await response.json();
+      if (result) {
+        router.push("/login");
+      }
       console.log(result);
     } catch (error) {
       console.error("Error:", error);

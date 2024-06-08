@@ -47,3 +47,28 @@ export const fetchUserData = async (user_id, token) => {
     const data = await response.json();
     return data;
   };
+
+
+export const fetchPlantsData = async (token : string) => {
+  try {
+    const header = {
+      'Authorization': `Bearer ${token}`,
+    };
+
+    const response = await fetch(`${baseUrl}/uploads/me`, {
+      method: 'GET',
+      headers: header,
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error fetching plants: ${response.statusText}`);
+    }
+
+    const plantData = await response.json();
+    return plantData;
+
+  } catch (error) {
+    console.error("Error fetching plants:", error);
+    return error;
+  }
+}

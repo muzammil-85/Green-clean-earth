@@ -1,58 +1,96 @@
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import React, { useState } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
+import Cookies from "js-cookie";
 
 const Navigationbar = () => {
     const [nav, setNav] = useState(false);
+    let token = Cookies.get('token')
 
-  const links = [
-    {
-      id: 1,
-      name: "Home",
-      link: "https://www.greencleanearth.org/",
-    },
-    {
-      id: 2,
-      name: "Projects",
-      link: "https://greencleanearth.org/projects",
-    },
-    // {
-    //   id: 3,
-    //   name: "Dashboard",
-    //   link: "/user-dash-home",
-    // },
-    {
-      id:4,
-      name:"Participant list",
-      link:"/participant-list"
-    },
-    {
-      id: 5,
-      name: "Login",
-      link: "/login",
-    },
-    {
-      id: 6,
-      name: "User Register",
-      link: "/user-register",
-    },
-    {
-      id: 7,
-      name: "Register",
-      link: "/register",
-    },
-    {
-      id: 8,
-      name: "About Us",
-      link: "https://greencleanearth.org/about",
-    },
-    {
-      id: 9,
-      name: "Contact Us",
-      link: "https://greencleanearth.org/contact-us",
-    },
-  ];
-
+  
+      let links = [
+        {
+          id: 1,
+          name: "Home",
+          link: "https://www.greencleanearth.org/",
+        },
+        {
+          id: 2,
+          name: "Projects",
+          link: "https://greencleanearth.org/projects",
+        },
+        // {
+        //   id: 3,
+        //   name: "Dashboard",
+        //   link: "/user-dash-home",
+        // },
+        {
+          id:4,
+          name:"Participant list",
+          link:"/participant-list"
+        },
+        {
+          id: 5,
+          name: "Login",
+          link: "/login",
+        },
+        {
+          id: 6,
+          name: "User Register",
+          link: "/user-register",
+        },
+        {
+          id: 7,
+          name: "Register",
+          link: "/register",
+        },
+        {
+          id: 8,
+          name: "About Us",
+          link: "https://greencleanearth.org/about",
+        },
+        {
+          id: 9,
+          name: "Contact Us",
+          link: "https://greencleanearth.org/contact-us",
+        },
+      ];
+      if(token){
+        links = [
+          {
+            id: 1,
+            name: "Home",
+            link: "https://www.greencleanearth.org/",
+          },
+          {
+            id: 2,
+            name: "Projects",
+            link: "https://greencleanearth.org/projects",
+          },
+          {
+            id:3,
+            name:"Participant list",
+            link:"/participant-list"
+          },
+          {
+            id: 4,
+            name: "About Us",
+            link: "https://greencleanearth.org/about",
+          },
+          {
+            id: 5,
+            name: "Contact Us",
+            link: "https://greencleanearth.org/contact-us",
+          },
+          {
+            id: 6,
+            name: "Logout",
+            link: "/logout",
+          },
+        ];
+      }
+    
   return (
     <div className="flex justify-between items-center w-full h-16 px-4 text-white bg-green-600 mb-2 border-b-2">
       <div>

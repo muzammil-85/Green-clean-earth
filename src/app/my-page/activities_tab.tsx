@@ -18,10 +18,8 @@ const headings = [
   "Value",
 ];
 
-export default function ActivitiesTab() {
+export default function ActivitiesTab({token}) {
   const [activity, setActivity] = useState([]);
-  const searchParams = useSearchParams();
-  const token = searchParams.get("token");
 
   useEffect(() => {
     async function fetchData() {
@@ -35,7 +33,7 @@ export default function ActivitiesTab() {
 
   return (
     <div className="">
-      <DialogUploadActivities />
+      <DialogUploadActivities token={token}/>
       <p>Table</p>
       <Table data={activity} headings={headings} />
     </div>

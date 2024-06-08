@@ -1,7 +1,9 @@
 import axios from "axios";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { baseUrl } from "@/app/api/status/route";
+import { baseUrl, imageURL } from "@/app/api/status/route";
+import { fetchPlantsData } from "../api/my-page/route";
+import { string } from "zod";
 
 
 interface TreeDetails {
@@ -28,7 +30,7 @@ const treeDetails = [
 const TreeDetailsCard: React.FC<TreeDetailsCardProps> = ({ tree }) => {
   return (
     <div className="bg-white p-4 rounded-lg overflow-hidden border shadow transform transition-transform hover:border-green-600 hover:shadow-lg">
-      <img className="w-full h-48 object-cover" src={tree.up_file} alt={tree.name} />
+      <img className="w-full h-48 object-cover" src={imageURL+tree.up_file} alt={tree.name} />
       <div className="p-4">
         <h2 className="text-xl font-bold mb-2">{tree.up_tree_name}</h2>
         <p className="text-gray-600">{tree.up_date}</p>
@@ -41,28 +43,16 @@ const TreeDetailsCard: React.FC<TreeDetailsCardProps> = ({ tree }) => {
 
 
 
-export default function MyUploadsTab() {
+export default function MyUploadsTab({token}) {
   const [upload, setUpload] = useState([]);
   const searchParams = useSearchParams();
-  const token = searchParams.get("token");
   const id = searchParams.get("id");
   useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const header = { Authorization: `Bearer ${token}` }
-        const response = await axios.get(`${baseUrl}/uploads/me`, 
-        { headers: header }
-      );
-        const uploadData = response.data;
-        console.log(uploadData.Uploads);
-        setUpload(uploadData.Uploads);
-        
-      } catch (error) {
-        console.error("Error fetching categories:", error);
-      }
+    const fetchTrees = async () => {
+        const response = await fetchPlantsData(token!);
+        setUpload(response.Uploads);
     };
-
-    fetchCategories();
+    fetchTrees();
   }, [token]);
     return (
         <div className="">

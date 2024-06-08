@@ -16,7 +16,7 @@ import { Input } from "@/components/ui/input"
 import NavigationBar from "@/components/navigationBar";
 import Footer from "@/components/footer";
 import { baseUrl } from "@/app/api/status/route";
-
+import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation'
 const formSchema = z.object({"username":z.string().min(3).max(255),"password":z.string().min(1).max(255)})
 
@@ -45,7 +45,7 @@ export default function CoordinatorLogin() {
           },
           body: JSON.stringify({
             username: values.username,
-            packages: values.password
+            password: values.password
           }), // Include cookies in the request
         }
       );
@@ -58,9 +58,11 @@ export default function CoordinatorLogin() {
         const result = await response.json();
         console.log(result.data.id);
         const id = result.data.id;
+        const token = result.data.token;
+        Cookies.set('token', token, { expires: 1 });
         if (id) {
           // Redirect to the dashboard
-          router.push("/coordinator-dashboard?id=" + id);
+          router.push(`/coordinator-dashboard?id=${id}`);
         }
   
       console.log(result);

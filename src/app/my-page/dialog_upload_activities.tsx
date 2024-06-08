@@ -14,7 +14,7 @@ import { Upload } from "lucide-react"
 import { FormUploadActivities } from "./form_upload_activities"
 import { ScrollArea } from "@/components/ui/scroll-area"
 
-export function DialogUploadActivities() {
+export function DialogUploadActivities({token}) {
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -29,7 +29,7 @@ export function DialogUploadActivities() {
         </DialogHeader>
 
         <ScrollArea className="h-full w-full p-2 rounded-md border">
-            <FormUploadActivities/>
+            <FormUploadActivities token={token}/>
         </ScrollArea>
         {/* <DialogFooter>
           <Button type="submit" className="bg-green-600 hover:bg-green-800">Save changes</Button>

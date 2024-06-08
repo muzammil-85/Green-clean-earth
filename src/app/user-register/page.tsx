@@ -16,6 +16,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { baseUrl } from "@/app/api/status/route";
 
+import { useRouter } from 'next/navigation'
 import {
   Select,
   SelectContent,
@@ -70,7 +71,7 @@ export default function UserRegister() {
   const searchParams = useSearchParams();
 
   const group_id = searchParams.get("group_id");
-
+  const router = useRouter()
   async function onSubmit(values) {
     console.log(values);
     
@@ -91,7 +92,6 @@ export default function UserRegister() {
   
     };
 
-    console.log(dataWithIds);
     
     try {
       const response = await fetch(`${baseUrl}/user/${group_id}/register`, {
@@ -105,8 +105,11 @@ export default function UserRegister() {
         console.log(response);
         throw new Error("Network response was not ok");
       }
-      alert("Registered");
+      
       const result = await response.json();
+      if (result) {
+        router.push("/login");
+      }
       console.log(result);
     } catch (error) {
       console.error("Error:", error);

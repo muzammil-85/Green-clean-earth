@@ -23,18 +23,16 @@ const initialProfile: Profile = {
   email: "example@email.com",
 };
 
-export default function ProfileTab() {
+export default function ProfileTab({token}) {
   const [profile, setProfile] = useState<Profile>(initialProfile);
   const searchParams = useSearchParams();
   const user_id = searchParams.get("id");
-  const token = searchParams.get("token");
 
   useEffect(() => {
     async function fetchData() {
       if (user_id && token) {
         const data = await fetchUserData(user_id, token);
         if(data.user){
-          console.log(data);
           const {us_name,us_address,us_mobile,us_email,us_district} = data.user[0];
 
           setProfile({

@@ -21,6 +21,8 @@ import { BsImages, BsPaperclip } from "react-icons/bs";
 import { IoSendOutline } from "react-icons/io5";
 import * as z from "zod";
 import { uploadPlantData } from "../api/upload-plant/route";
+
+import Cookies from 'js-cookie';
 const MAX_FILE_SIZE = 1024 * 1024 * 5;
 const ACCEPTED_IMAGE_MIME_TYPES = [
   "image/jpeg",
@@ -28,6 +30,8 @@ const ACCEPTED_IMAGE_MIME_TYPES = [
   "image/png",
   "image/webp",
 ];
+
+
 const ACCEPTED_IMAGE_TYPES = ["jpeg", "jpg", "png", "webp"];
 const formSchema = z.object({
   uname:z.string().max(255),
@@ -46,8 +50,7 @@ const formSchema = z.object({
 export type ContactFormData = z.infer<typeof formSchema>;
 
 export default function UploadPlant() {
-  const searchParams = useSearchParams();
-  const token = searchParams.get("token");
+  const token = Cookies.get('token')
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const form = useForm<ContactFormData>({
     resolver: zodResolver(formSchema),

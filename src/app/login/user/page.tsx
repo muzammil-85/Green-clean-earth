@@ -3,6 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
 import { useForm } from "react-hook-form"
 import { Button } from "@/components/ui/button"
+import Cookies from 'js-cookie';
 import {
   Form,
   FormControl,
@@ -55,10 +56,11 @@ export default function UserLogin() {
       }
       const result = await response.json();
       const id = result.data.id;
+      const token = result.data.token;
       if (id) {
-        router.push("/my-page?id=" + id + "&token=" + result.data.token);
+        Cookies.set('token', token, { expires: 1 });
+        router.push("/my-page?id=" + id);
       }
-      console.log(result);
     } catch (error) {
       console.error("Error:", error);
     }

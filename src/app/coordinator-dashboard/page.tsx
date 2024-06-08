@@ -4,16 +4,22 @@ import NavigationBar from "@/components/navigationBar";
 import { UserPlus } from "lucide-react";
 import Link from 'next/link'
 import { DialogAddUser } from "./dialog-add-user";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { baseUrl } from "@/app/api/status/route";
 
-export default function CoordinatorDashBoard() {
+import Cookies from 'js-cookie';
 
+export default function CoordinatorDashBoard() {
+  const router = useRouter();
   const searchParams = useSearchParams();
 
   const co_id = searchParams.get("id");
   console.log(co_id);
-
+  const token = Cookies.get('token')
+  if (!token) {
+    // Redirect to the login page
+    router.push("/login");
+  }
   async function onSubmit(values) {
     console.log(values);
     try {
@@ -35,7 +41,7 @@ export default function CoordinatorDashBoard() {
         console.log(response);
     
         const result = await response.json();
-        console.log(result.data.id);
+        
         // if (id) {
         //   // Redirect to the dashboard
         //   router.push("/coordinator-dashboard?id=" + id);
@@ -60,7 +66,7 @@ export default function CoordinatorDashBoard() {
             </div>
             <div className="flex flex-col gap-2">
               <p className="font-semibold text-xl">Add members</p>
-              <DialogAddUser/>
+              <DialogAddUser id={co_id}/>
             </div>
           </div>
 

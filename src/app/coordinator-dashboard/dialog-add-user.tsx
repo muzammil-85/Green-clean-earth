@@ -15,14 +15,15 @@ import { Label } from "@/components/ui/label"
 import { LinkIcon } from "lucide-react"
 import Link from "next/link"
 import { useState } from "react";
+import { baseUrl } from "../api/status/route";
 
 
-export function DialogAddUser() {
-
+export function DialogAddUser({ id }) {
+console.log(id);
   const referral_code = "abcde";
   const message = `
 Follow the link to join GreenCleanEarth mission.
-https://www.greencleanearth.org/user-register
+${baseUrl}/user-register/${parseInt(id)}
 Use referral code "${referral_code}" to join.
 `;
 
@@ -57,7 +58,7 @@ Use referral code "${referral_code}" to join.
               href={"https://www.greencleanearth.org/user-register"}
               className="text-green-600 text-base"
             >
-            greencleanearth.org/user-register
+            {baseUrl}/user-register/{parseInt(id)}
             </Link>
             <p className="py-2">
               Use referral code 
