@@ -27,6 +27,8 @@ import {
 import NavigationBar from "@/components/navigationBar";
 import Footer from "@/components/footer";
 import { useSearchParams } from "next/navigation";
+import { useToast } from "@/components/ui/use-toast"
+
 
 const formSchema = z.object({
   name: z.string().min(1).max(255),
@@ -40,8 +42,8 @@ const formSchema = z.object({
   password: z.string().max(255),
   referralcode: z.string().min(1).max(255),
 });
- 
 export default function UserRegister() {
+  const { toast } = useToast()
   const [countries, setCountries] = useState([]);
   const [states, setStates] = useState([]);
   const [districts, setDistricts] = useState([]);
@@ -107,11 +109,21 @@ export default function UserRegister() {
       }
       
       const result = await response.json();
+
       if (result) {
+        toast({
+          title: "Account created.",
+          description: "We've created your account for you.",
+        })
         router.push("/login");
       }
       console.log(result);
     } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Oops,Something went wrong !",
+        description: "Please try again...",
+      })
       console.error("Error:", error);
     }
   }

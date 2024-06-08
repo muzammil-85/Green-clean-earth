@@ -32,6 +32,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { baseUrl } from "@/app/api/status/route";
+import { useToast } from "@/components/ui/use-toast"
 
 import {
   Select,
@@ -52,7 +53,7 @@ export default function Register() {
   const [category, setCategory] = useState([]);
   const [lsgd, setLsgd] = useState([]);
   const [selectedDistrict, setSelectedDistrict] = useState("");
-
+  const { toast } = useToast()
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -127,8 +128,8 @@ async function onSubmit(values: z.infer<typeof formSchema>) {
     }
 
     const result = await response.json();
-    console.log(result);
     const { group_id } = result;
+
       if (values.categoryId === "NGO")
           router.push("/register/ngo-additional-details?group_id=" + group_id);
       else if (values.categoryId === "School")
@@ -138,6 +139,11 @@ async function onSubmit(values: z.infer<typeof formSchema>) {
       else
           router.push("/register/residenceass_additional_details?group_id=" + group_id);
   } catch (error) {
+    toast({
+      variant: "destructive",
+      title: "Oops,Something went wrong !",
+      description: "Please try again...",
+    })
     console.error("Error:", error);
   }
 }

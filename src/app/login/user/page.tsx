@@ -20,6 +20,7 @@ import { useRouter } from "next/navigation";
 import axios from 'axios';
 const formSchema = z.object({ "mobile": z.coerce.number().lte(9999999999), "password": z.string().min(1).max(255) })
 import { baseUrl } from "@/app/api/status/route";
+import { useToast } from "@/components/ui/use-toast"
 
 export default function UserLogin() {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -30,7 +31,7 @@ export default function UserLogin() {
     },
   })
 
-
+  const { toast } = useToast()
   const router = useRouter()
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const apidata = {
@@ -58,6 +59,10 @@ export default function UserLogin() {
       const id = result.data.id;
       const token = result.data.token;
       if (id) {
+        toast({
+          title: "Account logged in.",
+          description: "Successfully logged in.",
+        })
         Cookies.set('token', token, { expires: 1 });
         router.push("/my-page?id=" + id);
       }

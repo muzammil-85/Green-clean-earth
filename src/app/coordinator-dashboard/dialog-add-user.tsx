@@ -16,14 +16,16 @@ import { LinkIcon } from "lucide-react"
 import Link from "next/link"
 import { useState } from "react";
 import { baseUrl } from "../api/status/route";
+import { useToast } from "@/components/ui/use-toast"
 
 
 export function DialogAddUser({ id }) {
+  const { toast } = useToast()
 console.log(id);
   const referral_code = "abcde";
   const message = `
 Follow the link to join GreenCleanEarth mission.
-${baseUrl}/user-register/${parseInt(id)}
+${baseUrl}/user-register  /${parseInt(id)}
 Use referral code "${referral_code}" to join.
 `;
 
@@ -36,6 +38,11 @@ Use referral code "${referral_code}" to join.
         setIsCopied(false);
       }, 1000);
     } catch (err) {
+      toast({
+        variant: "destructive",
+        title: "Oops,Something went wrong !",
+        description: "Please try again...",
+      })
       console.error(err);
     }
   };

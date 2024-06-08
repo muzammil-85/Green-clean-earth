@@ -30,6 +30,7 @@ import {
 import NavigationBar from "@/components/navigationBar";
 import Footer from "@/components/footer";
 import { useSearchParams } from "next/navigation";
+import { useToast } from "@/components/ui/use-toast";
 const formSchema = z.object({
   members: z.coerce.number(),
 });
@@ -43,6 +44,7 @@ export default function NgoAdditionalDetails() {
     defaultValues: {},
   });
   const router = useRouter()
+  const { toast } = useToast()
   async function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
     const dataWithIds = {
@@ -67,10 +69,19 @@ export default function NgoAdditionalDetails() {
       }
       const result = await response.json();
       if (result) {
+        toast({
+          title: "Account created.",
+          description: "We've created your account for you.",
+        })
         router.push("/login");
       }
       console.log(result);
     } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Oops,Something went wrong !",
+        description: "Please try again...",
+      })
       console.error("Error:", error);
     }
   }

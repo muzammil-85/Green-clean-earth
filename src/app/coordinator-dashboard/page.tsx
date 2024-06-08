@@ -6,12 +6,14 @@ import Link from 'next/link'
 import { DialogAddUser } from "./dialog-add-user";
 import { useSearchParams, useRouter } from "next/navigation";
 import { baseUrl } from "@/app/api/status/route";
+import { useToast } from "@/components/ui/use-toast"
 
 import Cookies from 'js-cookie';
 
 export default function CoordinatorDashBoard() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { toast } = useToast()
 
   const co_id = searchParams.get("id");
   console.log(co_id);
@@ -48,6 +50,11 @@ export default function CoordinatorDashBoard() {
         // }
       console.log(result);
     } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Oops,Something went wrong !",
+        description: "Please try again...",
+      })
       console.error("Error:", error);
     }
   }

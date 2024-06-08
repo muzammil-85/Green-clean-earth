@@ -26,6 +26,8 @@ import NavigationBar from "@/components/navigationBar";
 import Footer from "@/components/footer";
 import { useSearchParams,useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useToast } from "@/components/ui/use-toast"
+
 const formSchema = z.object(
   {
     "country":z.string(),
@@ -89,6 +91,7 @@ const searchParams = useSearchParams();
 
 const group_id = searchParams.get("group_id");
 const router = useRouter()
+const { toast } = useToast()
 const onSubmit = async (values: z.infer<typeof formSchema>) => {
   console.log(values);
   const dataWithIds = {
@@ -119,12 +122,19 @@ const onSubmit = async (values: z.infer<typeof formSchema>) => {
 
     const result = await response.json();
     if (result) {
+      toast({
+        title: "Account created.",
+        description: "We've created your account for you.",
+      })
       router.push("/login");
     }
     console.log(result);
-    
-    // router.push("/register/promoter-additional-details?group_id=" + group_id);
   } catch (error) {
+    toast({
+      variant: "destructive",
+      title: "Oops,Something went wrong !",
+      description: "Please try again...",
+    })
     console.error("Error:", error);
   }
 };

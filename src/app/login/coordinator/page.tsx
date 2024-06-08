@@ -18,11 +18,12 @@ import Footer from "@/components/footer";
 import { baseUrl } from "@/app/api/status/route";
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation'
+import { useToast } from "@/components/ui/use-toast";
 const formSchema = z.object({"username":z.string().min(3).max(255),"password":z.string().min(1).max(255)})
 
 export default function CoordinatorLogin() {
   const router = useRouter()
-
+  const { toast } = useToast()
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -62,11 +63,20 @@ export default function CoordinatorLogin() {
         Cookies.set('token', token, { expires: 1 });
         if (id) {
           // Redirect to the dashboard
+          toast({
+            title: "Account logged in.",
+            description: "Successfully logged in.",
+          })
           router.push(`/coordinator-dashboard?id=${id}`);
         }
   
       console.log(result);
     } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Oops,Something went wrong !",
+        description: "Please try again...",
+      })
       console.error("Error:", error);
     }
   }

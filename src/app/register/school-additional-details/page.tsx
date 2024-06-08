@@ -25,6 +25,8 @@ import NavigationBar from "@/components/navigationBar";
 import { Input } from "@/components/ui/input";
 import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
+import { useToast } from "@/components/ui/use-toast"
+
 import { baseUrl } from "@/app/api/status/route";
 import { fetchClubData } from "@/app/api/register/route";
 
@@ -51,6 +53,7 @@ const MultiSelectZod = () => {
   const searchParams = useSearchParams();
   const groupId = searchParams.get("group_id");
   const router = useRouter();
+  const { toast } = useToast()
 
   useEffect(() => {
     const fetchClubs = async () => {
@@ -102,9 +105,18 @@ const MultiSelectZod = () => {
 
       const result = await response.json();
       if (result) {
+        toast({
+          title: "Account created.",
+          description: "We've created your account for you.",
+        })
         router.push("/login");
       }
     } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Oops,Something went wrong !",
+        description: "Please try again...",
+      })
       console.error("Error:", error);
     }
   };
