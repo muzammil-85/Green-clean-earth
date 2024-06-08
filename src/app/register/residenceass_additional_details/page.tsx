@@ -12,7 +12,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
-import { baseUrl } from "@/app/api/status/route";
+import { apiURL } from "@/app/api/status/route";
 
 import { Input } from "@/components/ui/input"
 import {
@@ -30,10 +30,6 @@ import { useToast } from "@/components/ui/use-toast"
 
 const formSchema = z.object(
   {
-    "country":z.string(),
-    "state":z.string(),
-    "district":z.string(),
-    "lsgdzone":z.string().max(255),
     "total_team":z.coerce.number(),
   })
 
@@ -43,47 +39,47 @@ export default function ResidenceAssAdditionalDetails() {
     defaultValues: {},
   })
 
-  const [countries, setCountries] = useState([]);
-  const [states, setStates] = useState([]);
-  const [districts, setDistricts] = useState([]);
-  const [category, setCategory] = useState([]);
-  const [lsgd, setLsgd] = useState([]);
-  const [selectedDistrict, setSelectedDistrict] = useState("");
+  // const [countries, setCountries] = useState([]);
+  // const [states, setStates] = useState([]);
+  // const [districts, setDistricts] = useState([]);
+  // const [category, setCategory] = useState([]);
+  // const [lsgd, setLsgd] = useState([]);
+  // const [selectedDistrict, setSelectedDistrict] = useState("");
 
   
-  useEffect(() => {
-    async function fetchData() {
-      const countryResponse = await fetch(`${baseUrl}/country`);
-      const countryData = await countryResponse.json();
-      setCountries(countryData.country);
+  // useEffect(() => {
+  //   async function fetchData() {
+  //     const countryResponse = await fetch(`${apiURL}/country`);
+  //     const countryData = await countryResponse.json();
+  //     setCountries(countryData.country);
 
-      const stateResponse = await fetch(`${baseUrl}/state`);
-      const stateData = await stateResponse.json();
-      setStates(stateData.state);
+  //     const stateResponse = await fetch(`${apiURL}/state`);
+  //     const stateData = await stateResponse.json();
+  //     setStates(stateData.state);
 
-      const districtResponse = await fetch(`${baseUrl}/district`);
-      const districtData = await districtResponse.json();
-      setDistricts(districtData.district);
+  //     const districtResponse = await fetch(`${apiURL}/district`);
+  //     const districtData = await districtResponse.json();
+  //     setDistricts(districtData.district);
 
-      const categoryResponse = await fetch(`${baseUrl}/category`);
-      const categoryData = await categoryResponse.json();
-      setCategory(categoryData.category);
-    }
-    fetchData();
-  }, []);
+  //     const categoryResponse = await fetch(`${apiURL}/category`);
+  //     const categoryData = await categoryResponse.json();
+  //     setCategory(categoryData.category);
+  //   }
+  //   fetchData();
+  // }, []);
 
   
-  useEffect(() => {
-    async function fetchLsgdData() {
-      if (selectedDistrict) {
-        console.log(selectedDistrict);
-        const lsgResponse = await fetch(`${baseUrl}/lsg/${selectedDistrict}`);
-        const lsgData = await lsgResponse.json();
-        setLsgd(lsgData.district);
-      }
-    }
-    fetchLsgdData();
-  }, [selectedDistrict]);
+  // useEffect(() => {
+  //   async function fetchLsgdData() {
+  //     if (selectedDistrict) {
+  //       console.log(selectedDistrict);
+  //       const lsgResponse = await fetch(`${apiURL}/lsg/${selectedDistrict}`);
+  //       const lsgData = await lsgResponse.json();
+  //       setLsgd(lsgData.district);
+  //     }
+  //   }
+  //   fetchLsgdData();
+  // }, [selectedDistrict]);
 
   
 // get group id from the url parameter
@@ -95,10 +91,10 @@ const { toast } = useToast()
 const onSubmit = async (values: z.infer<typeof formSchema>) => {
   console.log(values);
   const dataWithIds = {
-    countryId : countries.find((item) => item.cntry_name === values.country)?.cntry_id,
-    stateId : states.find((item) => item.st_name === values.state)?.st_id,
-    districtId : districts.find((item) => item.dis_name === values.district)?.dis_id,
-    lsgdId : lsgd.find((item) => item.lsg_name === values.lsgdzone)?.lsg_id,
+    // countryId : countries.find((item) => item.cntry_name === values.country)?.cntry_id,
+    // stateId : states.find((item) => item.st_name === values.state)?.st_id,
+    // districtId : districts.find((item) => item.dis_name === values.district)?.dis_id,
+    // lsgdId : lsgd.find((item) => item.lsg_name === values.lsgdzone)?.lsg_id,
     totalNoOfMembers : values.total_team,
     groupId: parseInt(group_id),
    
@@ -107,7 +103,7 @@ const onSubmit = async (values: z.infer<typeof formSchema>) => {
   console.log(dataWithIds);
 
   try {
-    const response = await fetch(`${baseUrl}/group/residence_association/register`, {
+    const response = await fetch(`${apiURL}/group/residence_association/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -153,128 +149,7 @@ const onSubmit = async (values: z.infer<typeof formSchema>) => {
               </h1>
           <Form {...form}>
             <form  noValidate onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <FormField
-                            control={form.control}
-                            name="country"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Country</FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                  <FormControl>
-                                    <SelectTrigger>
-                                      <SelectValue placeholder="Choose a country" />
-                                    </SelectTrigger>
-                                  </FormControl>
-                                  <SelectContent>
-                                  {countries.map((country) => (
-                            <SelectItem key={country.cntry_id} value={country.cntry_name}>
-                              {country.cntry_name}
-                            </SelectItem>
-                          ))}
-                                    <SelectItem value="other">Other</SelectItem>
-
-                                  </SelectContent>
-                                </Select>
-                                <FormDescription>
-                                  
-                                </FormDescription>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />             
-                    <FormField
-                            control={form.control}
-                            name="state"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>State</FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                  <FormControl>
-                                    <SelectTrigger>
-                                      <SelectValue placeholder="Choose state" />
-                                    </SelectTrigger>
-                                  </FormControl>
-                                  <SelectContent>
-                                  {states.map((state) => (
-                            <SelectItem key={state.st_id} value={state.st_name}>
-                              {state.st_name}
-
-                            </SelectItem>
-                          ))}
-                          <SelectItem value="other">Other</SelectItem>
-                                  </SelectContent>
-                                </Select>
-                                <FormDescription>
-                                  
-                                </FormDescription>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />  
-
-
-                    <FormField
-                            control={form.control}
-                            name="district"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>District</FormLabel>
-                                <Select onValueChange={(value) => {
-                                    form.setValue("district", value);
-                                    value = districts.find((item) => item.dis_name === value)?.dis_id
-                                    setSelectedDistrict(value);
-                                  }} defaultValue={field.value}>
-                                  <FormControl>
-                                    <SelectTrigger>
-                                      <SelectValue placeholder="Choose district" />
-                                    </SelectTrigger>
-                                  </FormControl>
-                                  <SelectContent>
-                                  {districts.map((district) => (
-                            <SelectItem key={district.dis_id} value={district.dis_name}>
-                              {district.dis_name}
-                            </SelectItem>
-                          ))}
-                                    <SelectItem value="other">Other</SelectItem>
-                                  </SelectContent>
-                                </Select>
-                                <FormDescription>
-                                  
-                                </FormDescription>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                  
-                    <FormField
-                            control={form.control}
-                            name="lsgdzone"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>LSGD / Zone</FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                  <FormControl>
-                                    <SelectTrigger>
-                                      <SelectValue placeholder="Choose Zone" />
-                                    </SelectTrigger>
-                                  </FormControl>
-                                  <SelectContent>
-                                  { lsgd && lsgd.map((lsg) => (
-                                          <SelectItem key={lsg.lsg_id} value={lsg.lsg_name}>
-                                            {lsg.lsg_name}
-                                          </SelectItem>
-                                        ))}
-                                    <SelectItem value="other">Other</SelectItem>
-                                  </SelectContent>
-                                </Select>
-                                <FormDescription>
-                                  
-                                </FormDescription>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                  
+            
                   <FormField
                     control={form.control}
                     name="total_team"

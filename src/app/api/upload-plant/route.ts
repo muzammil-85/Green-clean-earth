@@ -1,8 +1,9 @@
-import { baseUrl } from "../status/route";
+"use client";
+import { apiURL } from "../status/route";
 
 export const uploadPlantData = async (data: any, token: string | null) => {
     try {
-      const response = await fetch(`${baseUrl}/uploads/new`, { 
+      const response = await fetch(`${apiURL}/uploads/new`, { 
         method: "POST",
         body: data,
         headers: {

@@ -15,7 +15,7 @@ import { Label } from "@/components/ui/label"
 import { LinkIcon } from "lucide-react"
 import Link from "next/link"
 import { useState } from "react";
-import { baseUrl } from "../api/status/route";
+import { apiURL, baseURL } from "../api/status/route";
 import { useToast } from "@/components/ui/use-toast"
 
 
@@ -25,7 +25,7 @@ console.log(id);
   const referral_code = "abcde";
   const message = `
 Follow the link to join GreenCleanEarth mission.
-${baseUrl}/user-register  /${parseInt(id)}
+${baseURL}/user-register?id=${parseInt(id)}&ref=${referral_code}
 Use referral code "${referral_code}" to join.
 `;
 
@@ -62,10 +62,10 @@ Use referral code "${referral_code}" to join.
               Follow the link to join GreenCleanEarth mission.
             </p>
             <Link 
-              href={"https://www.greencleanearth.org/user-register"}
+              href={`/user-register?id=${id}&ref=${referral_code}`}
               className="text-green-600 text-base"
             >
-            {baseUrl}/user-register/{parseInt(id)}
+            {baseURL}/user-register?id={parseInt(id)}&ref={referral_code}
             </Link>
             <p className="py-2">
               Use referral code 

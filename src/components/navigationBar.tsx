@@ -1,107 +1,45 @@
+"use client";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
 import Cookies from "js-cookie";
 
-const Navigationbar = () => {
-    const [nav, setNav] = useState(false);
-    let token = Cookies.get('token')
+const NavigationBar = () => {
+  const [nav, setNav] = useState(false);
+  const [token, setToken] = useState(null);
 
-  
-      let links = [
-        {
-          id: 1,
-          name: "Home",
-          link: "https://www.greencleanearth.org/",
-        },
-        {
-          id: 2,
-          name: "Projects",
-          link: "https://greencleanearth.org/projects",
-        },
-        // {
-        //   id: 3,
-        //   name: "Dashboard",
-        //   link: "/user-dash-home",
-        // },
-        {
-          id:4,
-          name:"Participant list",
-          link:"/participant-list"
-        },
-        {
-          id: 5,
-          name: "Login",
-          link: "/login",
-        },
-        {
-          id: 6,
-          name: "User Register",
-          link: "/user-register",
-        },
-        {
-          id: 7,
-          name: "Register",
-          link: "/register",
-        },
-        {
-          id: 8,
-          name: "About Us",
-          link: "https://greencleanearth.org/about",
-        },
-        {
-          id: 9,
-          name: "Contact Us",
-          link: "https://greencleanearth.org/contact-us",
-        },
-      ];
-      if(token){
-        links = [
-          {
-            id: 1,
-            name: "Home",
-            link: "https://www.greencleanearth.org/",
-          },
-          {
-            id: 2,
-            name: "Projects",
-            link: "https://greencleanearth.org/projects",
-          },
-          {
-            id:3,
-            name:"Participant list",
-            link:"/participant-list"
-          },
-          {
-            id: 4,
-            name: "About Us",
-            link: "https://greencleanearth.org/about",
-          },
-          {
-            id: 5,
-            name: "Contact Us",
-            link: "https://greencleanearth.org/contact-us",
-          },
-          {
-            id: 6,
-            name: "Logout",
-            link: "/logout",
-          },
-        ];
-      }
-    
+  useEffect(() => {
+    const storedToken = Cookies.get('token');
+    setToken(storedToken);
+  }, []);
+
+  const guestLinks = [
+    { id: 1, name: "Home", link: "https://www.greencleanearth.org/" },
+    { id: 2, name: "Projects", link: "https://greencleanearth.org/projects" },
+    { id: 4, name: "Participant list", link: "/participant-list" },
+    { id: 5, name: "Login", link: "/login" },
+    { id: 6, name: "User Register", link: "/user-register" },
+    { id: 7, name: "Register", link: "/register" },
+    { id: 8, name: "About Us", link: "https://greencleanearth.org/about" },
+    { id: 9, name: "Contact Us", link: "https://greencleanearth.org/contact-us" },
+  ];
+
+  const userLinks = [
+    { id: 1, name: "Home", link: "https://www.greencleanearth.org/" },
+    { id: 2, name: "Projects", link: "https://greencleanearth.org/projects" },
+    { id: 3, name: "Participant list", link: "/participant-list" },
+    { id: 4, name: "About Us", link: "https://greencleanearth.org/about" },
+    { id: 5, name: "Contact Us", link: "https://greencleanearth.org/contact-us" },
+    { id: 6, name: "Logout", link: "/logout" },
+  ];
+
+  const links = token ? userLinks : guestLinks;
+
   return (
     <div className="flex justify-between items-center w-full h-16 px-4 text-white bg-green-600 mb-2 border-b-2">
       <div>
-        {/* <h1 className="text-5xl ml-2"><a className="link-underline hover:transition ease-in-out delay-150 hover:underline hover:decoration-solid" href="">Logo</a></h1> */}
         <h1 className="text-2xl font-bold ml-2">
-          <a
-            className=""
-            href=""
-            target="_blank"
-            rel="noreferrer"
-          >
+          <a href="https://www.greencleanearth.org/" target="_blank" rel="noreferrer">
             GreenCleanEarth
           </a>
         </h1>
@@ -120,7 +58,7 @@ const Navigationbar = () => {
 
       <div
         onClick={() => setNav(!nav)}
-        className="cursor-pointer pr-4 z-20 text-white md:hidden "
+        className="cursor-pointer pr-4 z-20 text-white md:hidden"
       >
         {nav ? <FaTimes size={30} /> : <FaBars size={30} />}
       </div>
@@ -143,4 +81,4 @@ const Navigationbar = () => {
   );
 };
 
-export default Navigationbar;
+export default NavigationBar;

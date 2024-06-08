@@ -10,11 +10,11 @@ import { fetchActivityData } from "../api/my-page/route";
 
 const headings = [
   "Sl No",
-  "Views, Likes, Comments, and Shares",
-  "Category",
-  "Name and Address of Participant",
+  // "Thumbnail",
+  "Name",
   "Name of Art - Brief Description",
-  "Thumbnail",
+  "Category",
+  "Views, Likes, Comments, and Shares",
   "Value",
 ];
 

@@ -1,5 +1,6 @@
+"use client";
 import axios from "axios";
-import { baseUrl } from "@/app/api/status/route";
+import { apiURL } from "@/app/api/status/route";
 
 export const fetchUserData = async (user_id, token) => {
     console.log('Fetching user');
@@ -7,7 +8,7 @@ export const fetchUserData = async (user_id, token) => {
       "Authorization": `Bearer ${token}`,
     };
     
-    const response = await fetch(`${baseUrl}/user/${user_id}`, { 
+    const response = await fetch(`${apiURL}/user/${user_id}`, { 
       method: "GET",
       headers: headersList
     });
@@ -19,7 +20,7 @@ export const fetchUserData = async (user_id, token) => {
 
   export const uploadActivityData = async (data: any, token: string | null, id: string | null) => {
     try {
-      const response = await fetch(`${baseUrl}/activity/new`, { 
+      const response = await fetch(`${apiURL}/activity/new`, { 
         method: "POST",
         body: data,
         headers: {
@@ -39,7 +40,7 @@ export const fetchUserData = async (user_id, token) => {
       "Authorization": `Bearer ${token}`,
     };
     
-    const response = await fetch(`${baseUrl}/activity/all`, { 
+    const response = await fetch(`${apiURL}/activity/all`, { 
       method: "GET",
       headers: headersList
     });
@@ -55,7 +56,7 @@ export const fetchPlantsData = async (token : string) => {
       'Authorization': `Bearer ${token}`,
     };
 
-    const response = await fetch(`${baseUrl}/uploads/me`, {
+    const response = await fetch(`${apiURL}/uploads/me`, {
       method: 'GET',
       headers: header,
     });

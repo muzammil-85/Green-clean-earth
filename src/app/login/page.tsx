@@ -17,6 +17,7 @@ import NavigationBar from "@/components/navigationBar";
 import Footer from "@/components/footer";
 import Link from "next/link";
 
+import Cookies from 'js-cookie';
 const formSchema = z.object({"mobile":z.coerce.number().lte(9999999999),"password":z.string().min(1).max(255)})
 
 export default function UserLogin() {
@@ -27,6 +28,9 @@ export default function UserLogin() {
 //password: "string",
 },
   })
+
+  
+  Cookies.remove('token');
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values)

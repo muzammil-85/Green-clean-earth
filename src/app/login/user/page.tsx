@@ -19,7 +19,7 @@ import Footer from "@/components/footer";
 import { useRouter } from "next/navigation";
 import axios from 'axios';
 const formSchema = z.object({ "mobile": z.coerce.number().lte(9999999999), "password": z.string().min(1).max(255) })
-import { baseUrl } from "@/app/api/status/route";
+import { apiURL } from "@/app/api/status/route";
 import { useToast } from "@/components/ui/use-toast"
 
 export default function UserLogin() {
@@ -42,7 +42,7 @@ export default function UserLogin() {
     console.log(apidata);
     try {
       const response = await fetch(
-        `${baseUrl}/user/login`,
+        `${apiURL}/user/login`,
         {
           method: "POST",
           headers: {
@@ -64,7 +64,7 @@ export default function UserLogin() {
           description: "Successfully logged in.",
         })
         Cookies.set('token', token, { expires: 1 });
-        router.push("/my-page?id=" + id);
+        router.replace("/my-page?id=" + id);
       }
     } catch (error) {
       console.error("Error:", error);

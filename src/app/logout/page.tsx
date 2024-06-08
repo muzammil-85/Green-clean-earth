@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
 import { useToast } from "@/components/ui/use-toast"
+import { apiURL } from '../api/status/route';
 
 
 const Logout = () => {
@@ -12,6 +13,13 @@ const Logout = () => {
 
   useEffect(() => {
     // Clear the authentication cookies
+    async function logout() {
+      const response = await fetch(`${apiURL}/logout`,
+      {
+        method: 'GET',
+      }
+    );
+    console.log(response);
     Cookies.remove('token');
     toast({
         title: "Logout",
@@ -19,6 +27,8 @@ const Logout = () => {
       });
     // Redirect to the login page
     router.push('/login');
+    }
+    logout();
   }, [router,toast]);
 
 

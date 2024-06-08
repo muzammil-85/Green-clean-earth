@@ -1,5 +1,5 @@
 "use client";
-import { baseUrl, imageURL } from "@/app/api/status/route";
+import { apiURL, imageURL } from "@/app/api/status/route";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 
@@ -33,7 +33,7 @@ const Table: React.FC<TableProps> = ({ headings, data }) => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get(`${baseUrl}/activity_category`);
+        const response = await axios.get(`${apiURL}/activity_category`);
         const categoriesData = response.data.activity_category;
         const categoriesMap = categoriesData.reduce((acc, category) => {
           acc[category.activity_category_id] = category.activity_category;
@@ -77,16 +77,16 @@ const Table: React.FC<TableProps> = ({ headings, data }) => {
               className={`${i % 2 !== 0 && "bg-gray-200"} text-center capitalize`}
             >
               <td className="">{startIndex + i + 1}</td>
-              <td className="p-4">
-                {d.activity_views} Views, {d.activity_likes} Likes
-              </td>
-              <td>
-                {categories[d.activity_category_id]}
-                </td>
+              {/* <td>
+                <img src={removejpg(d.activity_thumbnail)} alt="Thumbnail" />
+              </td> */}
               <td>{d.participant_name}</td>
               <td>{d.activity_title}{d.activity_description}</td>
               <td>
-                <img src={removejpg(d.activity_thumbnail)} alt="Thumbnail" />
+                {categories[d.activity_category_id]}
+                </td>
+              <td className="p-4">
+                {d.activity_views} Views, {d.activity_likes} Likes
               </td>
               <td>{d.activity_value}</td>
             </tr>

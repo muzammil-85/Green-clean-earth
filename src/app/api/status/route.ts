@@ -1,3 +1,4 @@
+"use client";
 import { NextRequest, NextResponse } from "next/server"
 
 
@@ -7,6 +8,6 @@ export function GET() {
     })
 }
 
-export const baseUrl = `http://localhost:3000/api/v1`
 export const imageURL = process.env.NEXT_PUBLIC_IMAGE_URL
-// export const baseUrl = `http://13.233.192.195:3000/api/v1`
+export const baseURL = process.env.NEXT_PUBLIC_BASE_URL
+export const apiURL = process.env.NEXT_PUBLIC_API_URL

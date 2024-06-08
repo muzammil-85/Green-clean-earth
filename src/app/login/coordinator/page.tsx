@@ -15,7 +15,7 @@ import {
 import { Input } from "@/components/ui/input"
 import NavigationBar from "@/components/navigationBar";
 import Footer from "@/components/footer";
-import { baseUrl } from "@/app/api/status/route";
+import { apiURL } from "@/app/api/status/route";
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation'
 import { useToast } from "@/components/ui/use-toast";
@@ -38,7 +38,7 @@ export default function CoordinatorLogin() {
     console.log(values);
     try {
       const response = await fetch(
-        `${baseUrl}/coordinator/login`,
+        `${apiURL}/coordinator/login`,
         {
           method: "POST",
           headers: {

@@ -1,3 +1,4 @@
+"use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
@@ -17,6 +18,7 @@ import { cn } from "@/lib/utils";
 import { BsImages, BsPaperclip } from "react-icons/bs";
 import { useToast } from "@/components/ui/use-toast";
 import { uploadPlantData } from "../api/upload-plant/route";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const MAX_FILE_SIZE = 1024 * 1024 * 5;
 const ACCEPTED_IMAGE_MIME_TYPES = [
@@ -45,6 +47,9 @@ export type ContactFormData = z.infer<typeof formSchema>;
 
 export function FormUploadPlant({ token }) {
   const { toast } = useToast();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const id = searchParams.get("id");
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const form = useForm<ContactFormData>({
     resolver: zodResolver(formSchema),
@@ -54,7 +59,6 @@ export function FormUploadPlant({ token }) {
   });
 
   const onSubmit = async (data: ContactFormData) => {
-    console.log(data);
     const formData = new FormData();
     formData.append("name", data.uname);
     formData.append("planterName", data.pname);
@@ -65,11 +69,18 @@ export function FormUploadPlant({ token }) {
 
     try {
       const response = await uploadPlantData(formData, token);
+      console.log("Response:", response);
       toast({
         title: "Submitted Successfully.",
         description: "Your plant has been uploaded successfully.",
       });
       console.log("Response:", response);
+      // router.push(`/my-page?id=${id}#link2`);
+      // Reload the page
+      setTimeout(function() {
+        window.location.reload();
+      }, 1800);
+
     } catch (error) {
       toast({
         variant: "destructive",
@@ -132,7 +143,7 @@ export function FormUploadPlant({ token }) {
         <div className={cn("flex md:flex-row w-[100%] gap-4 flex-col")}>
           <div className="flex w-[100%] gap-2 flex-col my-4">
             <FormLabel>Upload plant image</FormLabel>
-            <span className="text-xs text-gray-400">Maximum file size 5MB</span>
+            <span className="text-xs text-gray-400">Maximum file size 1MB</span>
             <div
               className={`flex w-[100%] gap-4 p-4 rounded border border-neutral-200 flex-col items-center md:flex-col md:justify-between md:items-center`}
             >

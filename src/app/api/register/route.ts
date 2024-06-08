@@ -1,9 +1,10 @@
-import { baseUrl } from "../status/route";
+"use client";
+import { apiURL } from "../status/route";
 
 // fetch the clubs for the school from api endpoint
 export const fetchClubData = async () => {
     try {
-      const response = await fetch(`${baseUrl}/clubs`, {
+      const response = await fetch(`${apiURL}/clubs`, {
         method: 'GET',
       });
   

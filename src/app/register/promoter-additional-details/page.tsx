@@ -20,7 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { baseUrl } from "@/app/api/status/route";
+import { apiURL } from "@/app/api/status/route";
 
 import NavigationBar from "@/components/navigationBar";
 import Footer from "@/components/footer";
@@ -51,19 +51,19 @@ export default function PromoterAdditionalDetails() {
   
   useEffect(() => {
     async function fetchData() {
-      const countryResponse = await fetch(`${baseUrl}/country`);
+      const countryResponse = await fetch(`${apiURL}/country`);
       const countryData = await countryResponse.json();
       setCountries(countryData.country);
 
-      const stateResponse = await fetch(`${baseUrl}/state`);
+      const stateResponse = await fetch(`${apiURL}/state`);
       const stateData = await stateResponse.json();
       setStates(stateData.state);
 
-      const districtResponse = await fetch(`${baseUrl}/district`);
+      const districtResponse = await fetch(`${apiURL}/district`);
       const districtData = await districtResponse.json();
       setDistricts(districtData.district);
 
-      const categoryResponse = await fetch(`${baseUrl}/category`);
+      const categoryResponse = await fetch(`${apiURL}/category`);
       const categoryData = await categoryResponse.json();
       setCategory(categoryData.category);
     }
@@ -75,7 +75,7 @@ export default function PromoterAdditionalDetails() {
     async function fetchLsgdData() {
       if (selectedDistrict) {
         console.log(selectedDistrict);
-        const lsgResponse = await fetch(`${baseUrl}/lsg/${selectedDistrict}`);
+        const lsgResponse = await fetch(`${apiURL}/lsg/${selectedDistrict}`);
         const lsgData = await lsgResponse.json();
         setLsgd(lsgData.district);
       }
@@ -111,7 +111,7 @@ const { toast } = useToast()
     console.log(dataWithIds);
   
     try {
-      const response = await fetch(`${baseUrl}/group/promoter/register`, {
+      const response = await fetch(`${apiURL}/group/promoter/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

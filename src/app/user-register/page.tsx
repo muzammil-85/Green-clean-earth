@@ -7,16 +7,14 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { baseUrl } from "@/app/api/status/route";
-
-import { useRouter } from 'next/navigation'
+import { apiURL } from "@/app/api/status/route";
+import { useRouter } from 'next/navigation';
 import {
   Select,
   SelectContent,
@@ -27,8 +25,7 @@ import {
 import NavigationBar from "@/components/navigationBar";
 import Footer from "@/components/footer";
 import { useSearchParams } from "next/navigation";
-import { useToast } from "@/components/ui/use-toast"
-
+import { useToast } from "@/components/ui/use-toast";
 
 const formSchema = z.object({
   name: z.string().min(1).max(255),
@@ -37,16 +34,23 @@ const formSchema = z.object({
   country: z.string(),
   state: z.string(),
   district: z.string(),
+  lsg: z.string().optional(),
+  city: z.string(),
   address: z.string(),
   gender: z.string(),
   password: z.string().max(255),
   referralcode: z.string().min(1).max(255),
 });
+
 export default function UserRegister() {
-  const { toast } = useToast()
+  const { toast } = useToast();
   const [countries, setCountries] = useState([]);
   const [states, setStates] = useState([]);
   const [districts, setDistricts] = useState([]);
+  const [lsgd, setLsgd] = useState([]);
+  const [selectedCountry, setSelectedCountry] = useState("");
+  const [selectedState, setSelectedState] = useState("");
+  const [selectedDistrict, setSelectedDistrict] = useState("");
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -55,48 +59,64 @@ export default function UserRegister() {
 
   useEffect(() => {
     async function fetchData() {
-      const countryResponse = await fetch(`${baseUrl}/country`);
+      const countryResponse = await fetch(`${apiURL}/country`);
       const countryData = await countryResponse.json();
       setCountries(countryData.country);
 
-      const stateResponse = await fetch(`${baseUrl}/state`);
+      const stateResponse = await fetch(`${apiURL}/state`);
       const stateData = await stateResponse.json();
       setStates(stateData.state);
 
-      const districtResponse = await fetch(`${baseUrl}/district`);
+      const districtResponse = await fetch(`${apiURL}/district`);
       const districtData = await districtResponse.json();
       setDistricts(districtData.district);
     }
     fetchData();
   }, []);
 
+  useEffect(() => {
+    async function fetchLsgdData() {
+      if (selectedDistrict) {
+        const dist_id = districts.find((item) => item.dis_name === selectedDistrict)?.dis_id;
+        console.log('dist_id', dist_id);
+        const lsgResponse = await fetch(`${apiURL}/lsg/${dist_id}`);
+        const lsgData = await lsgResponse.json();
+        setLsgd(lsgData.district);
+      }
+    }
+    fetchLsgdData();
+  }, [selectedDistrict, districts]);
+
   const searchParams = useSearchParams();
-
   const group_id = searchParams.get("group_id");
-  const router = useRouter()
-  async function onSubmit(values) {
-    console.log(values);
-    
-    const dataWithIds = {
-      name : values.name, 
-      email : values.email ,
-      address : values.address,
-      gender : values.gender,
-      password : values.password,
-      referalCode : values.referralcode ,
-      countryId : countries.find((item) => item.cntry_name === values.country)?.cntry_id,
-      stateId : states.find((item) => item.st_name === values.state)?.st_id,
-      districtId : districts.find((item) => item.dis_name === values.district)?.dis_id,
-      mobileNumber : values.mobile,
-      userPhoto : '',
-      profileDescription : '',
-     
-  
-    };
+  const ref = searchParams.get("ref");
 
-    
+  useEffect(() => {
+    if (ref) {
+      form.setValue("referralcode", ref);
+    }
+  }, [ref, form]);
+
+  const router = useRouter();
+
+  async function onSubmit(values) {
+    const dataWithIds = {
+      name: values.name,
+      email: values.email,
+      address: values.address,
+      gender: values.gender,
+      password: values.password,
+      referalCode: values.referralcode,
+      countryId: countries.find((item) => item.cntry_name === values.country)?.cntry_id,
+      stateId: states.find((item) => item.st_name === values.state)?.st_id,
+      districtId: districts.find((item) => item.dis_name === values.district)?.dis_id,
+      mobileNumber: values.mobile,
+      userPhoto: '',
+      profileDescription: '',
+    };
+    console.log(dataWithIds);
     try {
-      const response = await fetch(`${baseUrl}/user/${group_id}/register`, {
+      const response = await fetch(`${apiURL}/user/${group_id}/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -107,23 +127,23 @@ export default function UserRegister() {
         console.log(response);
         throw new Error("Network response was not ok");
       }
-      
+
       const result = await response.json();
 
       if (result) {
         toast({
           title: "Account created.",
           description: "We've created your account for you.",
-        })
+        });
         router.push("/login");
       }
       console.log(result);
     } catch (error) {
       toast({
         variant: "destructive",
-        title: "Oops,Something went wrong !",
+        title: "Oops, Something went wrong!",
         description: "Please try again...",
-      })
+      });
       console.error("Error:", error);
     }
   }
@@ -184,10 +204,13 @@ export default function UserRegister() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Country</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={(value) => {
+                        field.onChange(value);
+                        setSelectedCountry(value);
+                      }} defaultValue={field.value}>
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue placeholder="" />
+                            <SelectValue placeholder="Choose a country" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
@@ -202,50 +225,99 @@ export default function UserRegister() {
                     </FormItem>
                   )}
                 />
+                {selectedCountry === 'India' && (
+                  <FormField
+                    control={form.control}
+                    name="state"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>State</FormLabel>
+                        <Select onValueChange={(value) => {
+                          field.onChange(value);
+                          setSelectedState(value);
+                        }} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Choose a state" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {states.map((state) => (
+                              <SelectItem key={state.st_id} value={state.st_name}>
+                                {state.st_name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
+                {selectedState === 'Kerala' && (
+                  <FormField
+                    control={form.control}
+                    name="district"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>District</FormLabel>
+                        <Select onValueChange={(value) => {
+                          field.onChange(value);
+                          setSelectedDistrict(value);
+                        }} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Choose a district" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {districts.map((district) => (
+                              <SelectItem key={district.dis_id} value={district.dis_name}>
+                                {district.dis_name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
+                {selectedState === 'Kerala' && (
+                  <FormField
+                    control={form.control}
+                    name="lsg"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>LSGD</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Choose an LSGD" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {lsgd.map((item) => (
+                              <SelectItem key={item.lsgd_id} value={item.lsg_name}>
+                                {item.lsg_name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
                 <FormField
                   control={form.control}
-                  name="state"
+                  name="city"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>State</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {states.map((state) => (
-                            <SelectItem key={state.st_id} value={state.st_name}>
-                              {state.st_name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="district"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>District</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {districts.map((district) => (
-                            <SelectItem key={district.dis_id} value={district.dis_name}>
-                              {district.dis_name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                      <FormLabel>City</FormLabel>
+                      <FormControl>
+                        <Input placeholder="City" {...field} />
+                      </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -257,7 +329,7 @@ export default function UserRegister() {
                     <FormItem>
                       <FormLabel>Address</FormLabel>
                       <FormControl>
-                        <Input placeholder="" {...field} />
+                        <Input placeholder="Address" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -272,12 +344,13 @@ export default function UserRegister() {
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue placeholder="" />
+                            <SelectValue placeholder="Select your gender" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
                           <SelectItem value="male">Male</SelectItem>
                           <SelectItem value="female">Female</SelectItem>
+                          <SelectItem value="other">Other</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -291,7 +364,7 @@ export default function UserRegister() {
                     <FormItem>
                       <FormLabel>Password</FormLabel>
                       <FormControl>
-                        <Input type="password" placeholder="" {...field} />
+                        <Input type="password" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -302,17 +375,15 @@ export default function UserRegister() {
                   name="referralcode"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Referral Code</FormLabel>
+                      <FormLabel>Referral code</FormLabel>
                       <FormControl>
-                        <Input placeholder="" {...field} />
+                        <Input placeholder="Referral code" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                <Button type="submit" className="bg-green-600">
-                  Submit
-                </Button>
+                <Button type="submit" className="w-full">Register</Button>
               </form>
             </Form>
           </div>

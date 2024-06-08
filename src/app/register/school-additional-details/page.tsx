@@ -27,7 +27,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast"
 
-import { baseUrl } from "@/app/api/status/route";
+import { apiURL } from "@/app/api/status/route";
 import { fetchClubData } from "@/app/api/register/route";
 
 const formSchema = z.object({
@@ -75,12 +75,7 @@ const MultiSelectZod = () => {
       .filter((club) => data.value.includes(club.name))
       .map((club) => club.id);
     console.log(groupId)
-    // const formData = new FormData();
-    // formData.append("groupId", groupId);
-    // formData.append("clubs", selectedClubIds.join(","));
-    // formData.append("list_of_classes", data.list_of_classes);
-    // formData.append("no_of_students", data.no_of_students.toString());
-    // formData.append("phoneNUmber", data.phoneNUmber.toString());
+   
     const payload = {
       groupId: parseInt(groupId),
       clubs:  selectedClubIds.toString(),  // assuming data.value contains an array of selected club IDs
@@ -91,7 +86,7 @@ const MultiSelectZod = () => {
     console.log(payload);
 
     try {
-      const response = await fetch(`${baseUrl}/group/school/register`, {
+      const response = await fetch(`${apiURL}/group/school/register`, {
         method: "POST",
         body: JSON.stringify(payload),
         headers: {
@@ -202,34 +197,6 @@ const MultiSelectZod = () => {
                       <FormLabel>List of classes</FormLabel>
                       <FormControl>
                         <Input placeholder="" {...field} />
-                      </FormControl>
-                      <FormDescription> </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={multiForm.control}
-                  name="your_coordinator"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Your coordinator</FormLabel>
-                      <FormControl>
-                        <Input placeholder="" {...field} />
-                      </FormControl>
-                      <FormDescription> </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={multiForm.control}
-                  name="phoneNUmber"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Phone Number</FormLabel>
-                      <FormControl>
-                        <Input type="number" placeholder="" {...field} />
                       </FormControl>
                       <FormDescription> </FormDescription>
                       <FormMessage />

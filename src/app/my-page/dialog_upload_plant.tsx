@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -30,7 +31,7 @@ export function DialogUploadPlant({token}) {
         </DialogHeader>
 
         <ScrollArea className="h-full w-full p-2 rounded-md border">
-            <FormUploadPlant token={token}/>
+            <FormUploadPlant token={token} />
         </ScrollArea>
         {/* <DialogFooter>
           <Button type="submit" className="bg-green-600 hover:bg-green-800">Save changes</Button>

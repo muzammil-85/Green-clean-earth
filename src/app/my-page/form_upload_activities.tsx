@@ -1,8 +1,9 @@
+"use client";
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
 import { useForm } from "react-hook-form"
 import axios from "axios";
-import { baseUrl } from "@/app/api/status/route";
+import { apiURL } from "@/app/api/status/route";
 
 import { Button } from "@/components/ui/button"
 import {
@@ -28,13 +29,7 @@ import { useState, useEffect } from "react"
 import { useSearchParams } from "next/navigation";
 import { uploadActivityData } from "../api/my-page/route";
 
-const MAX_FILE_SIZE = 1024 * 1024 * 5;
-const ACCEPTED_IMAGE_MIME_TYPES = [
-  "image/jpeg",
-  "image/jpg",
-  "image/png",
-  "image/webp",
-];
+
 
 const formSchema = z.object({
   category: z.string(),
@@ -44,21 +39,11 @@ const formSchema = z.object({
   activity_title: z.string().max(255),
   short_desc: z.string().max(255),
   social_link: z.string().max(255),
-  activityThumbnail: z
-    .any()
-    .refine((files) => {
-      return files?.[0]?.size <= MAX_FILE_SIZE;
-    }, `Max image size is 5MB.`)
-    .refine(
-      (files) => ACCEPTED_IMAGE_MIME_TYPES.includes(files?.[0]?.type),
-      "Only .jpg, .jpeg, .png and .webp formats are supported."
-    ),
 })
 
 export function FormUploadActivities({token}) {
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
-  const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
   
@@ -78,7 +63,7 @@ export function FormUploadActivities({token}) {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get(`${baseUrl}/activity_category`);
+        const response = await axios.get(`${apiURL}/activity_category`);
         
         setCategories(response.data.activity_category);
       } catch (error) {
@@ -88,7 +73,7 @@ export function FormUploadActivities({token}) {
 
     const fetchSubCategories = async () => {
       try {
-        const response = await axios.get(`${baseUrl}/activity_sub_category`);
+        const response = await axios.get(`${apiURL}/activity_sub_category`);
         setSubCategories(response.data.activity_sub_category);
       } catch (error) {
         console.error("Error fetching subcategories:", error);
@@ -110,9 +95,7 @@ export function FormUploadActivities({token}) {
     formData.append("activityTitle", values.activity_title);
     formData.append("shortDesc", values.short_desc);
     formData.append("socialMediaLink", values.social_link);
-    if (selectedImage) {
-      formData.append("activityThumbnail", selectedImage);
-    }
+    
 
     try {
       const response = await uploadActivityData(formData, token, id);
@@ -244,62 +227,7 @@ export function FormUploadActivities({token}) {
             </FormItem>
           )}
         />
-        <div className={cn("flex md:flex-row w-[100%] gap-4 flex-col")}>
-          <div className="flex w-[100%] gap-2 flex-col my-4">
-            <FormLabel>Upload plant image</FormLabel>
-            <span className="text-xs text-gray-400">Maximum file size 5MB</span>
-            <div className={`flex w-[100%] gap-4 p-4 rounded border border-neutral-200 flex-col items-center md:flex-col md:justify-between md:items-center`}>
-              <div className={`flex md:flex-[1] h-[fit-content] md:p-4 md:justify-between md:flex-row`}>
-                {selectedImage ? (
-                  <div className="md:max-w-[200px]">
-                    <img
-                      src={URL.createObjectURL(selectedImage)}
-                      alt="Selected"
-                    />
-                  </div>
-                ) : (
-                  <div className="inline-flex items-center justify-between">
-                    <div className="p-3 bg-slate-200 justify-center items-center flex">
-                      <BsImages size={56} />
-                    </div>
-                  </div>
-                )}
-              </div>
-              <FormField
-                control={form.control}
-                name="activityThumbnail"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Button size="lg" type="button" className="bg-green-100 hover:bg-green-300 border-2 border-green-600 text-green-600">
-                        <input
-                          type="file"
-                          className="hidden"
-                          id="fileInput"
-                          accept="image/*"
-                          onBlur={field.onBlur}
-                          name={field.name}
-                          onChange={(e) => {
-                            field.onChange(e.target.files);
-                            setSelectedImage(e.target.files?.[0] || null);
-                          }}
-                          ref={field.ref}
-                        />
-                        <label
-                          htmlFor="fileInput"
-                          className="text-neutral-90 flex gap-2 justify-center items-center w-full"
-                        >
-                          <BsPaperclip /> Upload image
-                        </label>
-                      </Button>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-          </div>
-        </div>
+        
         <Button type="submit" className="bg-green-700 w-[100%]">
           Submit
         </Button>

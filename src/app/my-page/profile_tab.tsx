@@ -32,12 +32,12 @@ export default function ProfileTab({token}) {
     async function fetchData() {
       if (user_id && token) {
         const data = await fetchUserData(user_id, token);
+        console.log(data);
         if(data.user){
           const {us_name,us_address,us_mobile,us_email,us_district} = data.user[0];
 
           setProfile({
             name: us_name,
-            location: us_district||"Location",
             address: us_address,
             contact: us_mobile,
             email: us_email,
@@ -59,7 +59,7 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({ profile }) => {
   return (
     <div className="profile-details leading-normal">
       <h1 className="text-3xl font-semibold py-2">{profile.name}</h1>
-      <p><strong>Location:</strong> {profile.location}</p>
+      <p><strong>Address:</strong> {profile.address}</p>
       {/* <p><strong>Address:</strong> {profile.address}</p> */}
       <p><strong>Phone:</strong> {profile.contact}</p>
       <p><strong>Email:</strong> {profile.email}</p>
