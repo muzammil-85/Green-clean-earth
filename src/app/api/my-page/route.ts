@@ -27,10 +27,10 @@ export const fetchUserData = async (user_id, token) => {
           "Authorization": `Bearer ${token}`,
         },
       });
-      return response.json();
+      return response;
     } catch (error) {
       console.error("Error uploading activity data:", error);
-      throw error;
+     
     }
   };
 

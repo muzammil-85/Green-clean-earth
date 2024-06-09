@@ -35,9 +35,7 @@ const formSchema = z.object({
   no_of_students: z.coerce.number(),
   total_classes: z.coerce.number().gte(1).lte(999),
   list_of_classes: z.string().min(3).max(255),
-  your_coordinator: z.string().min(3).max(255),
-  phoneNUmber: z.coerce.number(),
-  referral_name: z.string().min(3),
+  // referral_name: z.string().min(3),
 });
 
 type FormSchema = z.infer<typeof formSchema>;
@@ -52,6 +50,7 @@ const MultiSelectZod = () => {
   });
   const searchParams = useSearchParams();
   const groupId = searchParams.get("group_id");
+  const pno = searchParams.get("pno");
   const router = useRouter();
   const { toast } = useToast()
 
@@ -81,7 +80,7 @@ const MultiSelectZod = () => {
       clubs:  selectedClubIds.toString(),  // assuming data.value contains an array of selected club IDs
       list_of_classes: data.list_of_classes.toString(), // assuming data.value contains an array of
       no_of_students: parseInt(data.no_of_students),
-      phoneNUmber: data.phoneNUmber,
+      phoneNUmber: parseInt(pno),
     };
     console.log(payload);
 
@@ -203,7 +202,8 @@ const MultiSelectZod = () => {
                     </FormItem>
                   )}
                 />
-                <FormField
+                
+                {/* <FormField
                   control={multiForm.control}
                   name="referral_name"
                   render={({ field }) => (
@@ -216,7 +216,7 @@ const MultiSelectZod = () => {
                       <FormMessage />
                     </FormItem>
                   )}
-                />
+                /> */}
                 <Button type="submit" className="bg-green-600">
                   Submit
                 </Button>

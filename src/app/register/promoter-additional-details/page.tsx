@@ -33,10 +33,6 @@ const formSchema = z.object(
   {
     "city_name":z.string().max(255),
     "category":z.string().max(255),
-    "country":z.string().max(255),
-    "state":z.string().max(255),
-    "district":z.string().max(255),
-    "lsgdzone":z.string().max(255),
     "total_team":z.coerce.number(),
   })
 
@@ -98,10 +94,6 @@ const { toast } = useToast()
     console.log(values);
     const dataWithIds = {
       cityName : values.city_name,
-      countryId : countries.find((item) => item.cntry_name === values.country)?.cntry_id,
-      stateId : states.find((item) => item.st_name === values.state)?.st_id,
-      districtId : districts.find((item) => item.dis_name === values.district)?.dis_id,
-      lsgdId : lsgd.find((item) => item.lsg_name === values.lsgdzone)?.lsg_id,
       totalNoOfMembers : values.total_team,
       categoryIdPromoting : category.find((item) => item.group_type === values.category)?.id,
       groupId: parseInt(group_id),
@@ -175,7 +167,7 @@ const { toast } = useToast()
                             name="category"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Category</FormLabel>
+                                <FormLabel>Promoting Category</FormLabel>
                                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                                   <FormControl>
                                     <SelectTrigger>
@@ -184,9 +176,10 @@ const { toast } = useToast()
                                   </FormControl>
                                   <SelectContent>
                                   {category.map((category) => (
-                            <SelectItem key={category.id} value={category.group_type}>
+                                    category.group_type !='Promoter'?
+                            (<SelectItem key={category.id} value={category.group_type}>
                               {category.group_type}
-                            </SelectItem>
+                            </SelectItem>):''
                           ))}
                                   
                                   </SelectContent>
@@ -198,127 +191,7 @@ const { toast } = useToast()
 
                                   
 
-                    <FormField
-                            control={form.control}
-                            name="country"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Country</FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                  <FormControl>
-                                    <SelectTrigger>
-                                      <SelectValue placeholder="Choose a country" />
-                                    </SelectTrigger>
-                                  </FormControl>
-                                  <SelectContent>
-                                  {countries.map((country) => (
-                            <SelectItem key={country.cntry_id} value={country.cntry_name}>
-                              {country.cntry_name}
-                            </SelectItem>
-                          ))}
-                                    <SelectItem value="other">Other</SelectItem>
-
-                                  </SelectContent>
-                                </Select>
-                                <FormDescription>
-                                  
-                                </FormDescription>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />             
-                    <FormField
-                            control={form.control}
-                            name="state"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>State</FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                  <FormControl>
-                                    <SelectTrigger>
-                                      <SelectValue placeholder="Choose state" />
-                                    </SelectTrigger>
-                                  </FormControl>
-                                  <SelectContent>
-                                  {states.map((state) => (
-                            <SelectItem key={state.st_id} value={state.st_name}>
-                              {state.st_name}
-
-                            </SelectItem>
-                          ))}
-                          <SelectItem value="other">Other</SelectItem>
-                                  </SelectContent>
-                                </Select>
-                                <FormDescription>
-                                  
-                                </FormDescription>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />  
-
-
-                    <FormField
-                            control={form.control}
-                            name="district"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>District</FormLabel>
-                                <Select onValueChange={(value) => {
-                                    form.setValue("district", value);
-                                    value = districts.find((item) => item.dis_name === value)?.dis_id
-                                    setSelectedDistrict(value);
-                                  }} defaultValue={field.value}>
-                                  <FormControl>
-                                    <SelectTrigger>
-                                      <SelectValue placeholder="Choose district" />
-                                    </SelectTrigger>
-                                  </FormControl>
-                                  <SelectContent>
-                                  {districts.map((district) => (
-                            <SelectItem key={district.dis_id} value={district.dis_name}>
-                              {district.dis_name}
-                            </SelectItem>
-                          ))}
-                                    <SelectItem value="other">Other</SelectItem>
-                                  </SelectContent>
-                                </Select>
-                                <FormDescription>
-                                  
-                                </FormDescription>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                  
-                    <FormField
-                            control={form.control}
-                            name="lsgdzone"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>LSGD / Zone</FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                  <FormControl>
-                                    <SelectTrigger>
-                                      <SelectValue placeholder="Choose Zone" />
-                                    </SelectTrigger>
-                                  </FormControl>
-                                  <SelectContent>
-                                  { lsgd && lsgd.map((lsg) => (
-                                          <SelectItem key={lsg.lsg_id} value={lsg.lsg_name}>
-                                            {lsg.lsg_name}
-                                          </SelectItem>
-                                        ))}
-                                    <SelectItem value="other">Other</SelectItem>
-                                  </SelectContent>
-                                </Select>
-                                <FormDescription>
-                                  
-                                </FormDescription>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
+                    
                   <FormField
                     control={form.control}
                     name="total_team"

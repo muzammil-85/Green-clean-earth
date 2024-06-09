@@ -69,7 +69,7 @@ export default function Register() {
   const [lsgd, setLsgd] = useState([]);
   const [selectedDistrict, setSelectedDistrict] = useState("");
   const [selectedState, setSelectedState] = useState("");
-  const [selectedCountry, setSelectedCountry] = useState("India");
+  const [selectedCountry, setSelectedCountry] = useState("");
   const { toast } = useToast()
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -107,7 +107,6 @@ export default function Register() {
     async function fetchLsgdData() {
       if (selectedDistrict) {
         const dist_id = districts.find((item) => item.dis_name === selectedDistrict)?.dis_id;
-        console.log('dist_id', dist_id);
         const lsgResponse = await fetch(`${apiURL}/lsg/${dist_id}`);
         const lsgData = await lsgResponse.json();
         setLsgd(lsgData.district);
@@ -118,16 +117,20 @@ export default function Register() {
 
   const router = useRouter()
 
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const country_id = countries.find((item) => item.cntry_name === values.country)?.cntry_id;
     const lsgd_id = lsgd.find((item) => item.lsg_name === values.lsg)?.lsg_id;
     const dataWithIds = {
       ...values,
-      categoryId: category.find((item) => item.group_type === values.categoryId)?.id,
-      country: country_id,
+      categoryId: category.find((item) => item.group_type === values.categoryId)?.id.toString(),
+      country: country_id.toString(),
       state: states.find((item) => item.st_name === values.state)?.st_id,
       district: districts.find((item) => item.dis_name === values.district)?.dis_id,
-      lsg: lsgd_id
+      lsg: lsgd_id,
+      whatsapp_number: values.whatsapp_number.toString(),
+      city: values.city || 'city',
+      province: values.city || 'province',
     };
     console.log(dataWithIds);
 
@@ -147,15 +150,20 @@ export default function Register() {
 
       const result = await response.json();
       const { group_id } = result;
+      toast({
+        title: "Registeration Successful! .",
+        description: "We've created your account for you.Please fill further details.",
+      })
+
 
       if (values.categoryId === "NGO")
         router.push("/register/ngo-additional-details?group_id=" + group_id);
       else if (values.categoryId === "School")
-        router.push("/register/school-additional-details?group_id=" + group_id);
+        router.push("/register/school-additional-details?group_id=" + group_id + "&pno=" + values.whatsapp_number);
       else if (values.categoryId === "Residence Association")
         router.push("/register/residenceass_additional_details?group_id=" + group_id);
       else
-        router.push("/register/promoter_additional_details?group_id=" + group_id);
+        router.push("/register/promoter-additional-details?group_id=" + group_id);
     } catch (error) {
       toast({
         variant: "destructive",
@@ -392,12 +400,13 @@ export default function Register() {
                     )}
                   />
                 )}
+                {selectedCountry != 'India' && (
                 <FormField
                   control={form.control}
                   name="city"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>City</FormLabel>
+                      <FormLabel>City / Province</FormLabel>
                       <FormControl>
                         <Input {...field} />
                       </FormControl>
@@ -405,6 +414,7 @@ export default function Register() {
                     </FormItem>
                   )}
                 />
+              )}
                 <FormField
                   control={form.control}
                   name="username"

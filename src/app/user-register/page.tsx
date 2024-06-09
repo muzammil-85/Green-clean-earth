@@ -32,10 +32,10 @@ const formSchema = z.object({
   email: z.string().email().max(255),
   mobile: z.coerce.number().gte(1).lte(9999999999),
   country: z.string(),
-  state: z.string(),
-  district: z.string(),
+  state: z.string().optional(),
+  district: z.string().optional(),
   lsg: z.string().optional(),
-  city: z.string(),
+  city: z.string().optional(),
   address: z.string(),
   gender: z.string(),
   password: z.string().max(255),
@@ -88,7 +88,7 @@ export default function UserRegister() {
   }, [selectedDistrict, districts]);
 
   const searchParams = useSearchParams();
-  const group_id = searchParams.get("group_id");
+  const group_id = searchParams.get("id");
   const ref = searchParams.get("ref");
 
   useEffect(() => {
@@ -108,9 +108,9 @@ export default function UserRegister() {
       password: values.password,
       referalCode: values.referralcode,
       countryId: countries.find((item) => item.cntry_name === values.country)?.cntry_id,
-      stateId: states.find((item) => item.st_name === values.state)?.st_id,
+      stateId: states.find((item) => item.st_name === values.state)?.st_id.toString(),
       districtId: districts.find((item) => item.dis_name === values.district)?.dis_id,
-      mobileNumber: values.mobile,
+      mobileNumber: values.mobile.toString(),
       userPhoto: '',
       profileDescription: '',
     };
@@ -314,7 +314,7 @@ export default function UserRegister() {
                   name="city"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>City</FormLabel>
+                      <FormLabel>City / Province</FormLabel>
                       <FormControl>
                         <Input placeholder="City" {...field} />
                       </FormControl>

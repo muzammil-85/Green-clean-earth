@@ -28,22 +28,43 @@ import { BsImages, BsPaperclip } from "react-icons/bs"
 import { useState, useEffect } from "react"
 import { useSearchParams } from "next/navigation";
 import { uploadActivityData } from "../api/my-page/route";
+import { useToast } from "@/components/ui/use-toast";
 
 
+const MAX_FILE_SIZE = 1024 * 1024 * 5;
+const ACCEPTED_IMAGE_MIME_TYPES = [
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/webp",
+];
+const ACCEPTED_IMAGE_TYPES = ["jpeg", "jpg", "png", "webp"];
 
 const formSchema = z.object({
-  category: z.string(),
-  sub_category: z.string(),
-  name: z.string().max(255),
-  address: z.string().max(255),
-  activity_title: z.string().max(255),
-  short_desc: z.string().max(255),
-  social_link: z.string().max(255),
+  "category":z.string(),
+  "sub_category":z.string(),
+  "name":z.string().max(255),
+  "address":z.string().max(255),
+  "activity_title":z.string().max(255),
+  "short_desc":z.string().max(255),
+  "social_link":z.string().max(255),
+  activityThumbnail: z
+    .any()
+    .refine((files) => {
+      return files?.[0]?.size <= MAX_FILE_SIZE;
+    }, `Max image size is 1MB.`)
+    .refine(
+      (files) => ACCEPTED_IMAGE_MIME_TYPES.includes(files?.[0]?.type),
+      "Only .jpg, .jpeg, .png and .webp formats are supported."
+    ),
 })
 
 export function FormUploadActivities({token}) {
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
+  const { toast } = useToast();
+
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
   
@@ -95,11 +116,28 @@ export function FormUploadActivities({token}) {
     formData.append("activityTitle", values.activity_title);
     formData.append("shortDesc", values.short_desc);
     formData.append("socialMediaLink", values.social_link);
+    if (selectedImage) {
+      formData.append("activityThumbnail", selectedImage);
+    }
     
 
     try {
       const response = await uploadActivityData(formData, token, id);
+      if(response.status==200){
+      toast({
+        title: "Submitted Successfully.",
+        description: "Your plant has been uploaded successfully.",
+      });
+      setTimeout(function() {
+        window.location.reload();
+      }, 1800);
+    }
     } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Oops, Something went wrong!",
+        description: "Please try again...",
+      });
       console.error("Error:", error);
     }
   }
@@ -227,7 +265,68 @@ export function FormUploadActivities({token}) {
             </FormItem>
           )}
         />
-        
+         <div className={cn("flex md:flex-row w-[100%] gap-4 flex-col")}>
+              <div className="flex w-[100%] gap-2 flex-col my-4">
+              <FormLabel>Upload plant image</FormLabel>
+              <span className="text-xs text-gray-400">Maximum file size 5MB</span>
+              <div className={`flex w-[100%] gap-4 p-4 rounded border border-neutral-200 flex-col items-center md:flex-col md:justify-between md:items-center`}>
+                <div className={`flex  md:flex-[1] h-[fit-content] md:p-4 md:justify-between md:flex-row`}>
+                  {selectedImage ? (
+                    <div className="md:max-w-[200px]">
+                      <img
+                        src={URL.createObjectURL(selectedImage)}
+                        alt="Selected"
+                      />
+                    </div>
+                  ) : (
+                    <div className="inline-flex items-center justify-between">
+                      <div className="p-3 bg-slate-200  justify-center items-center flex">
+                        <BsImages size={56} />
+                      </div>
+                    </div>
+                  )}
+                </div> 
+                
+                <FormField
+                  control={form.control}
+                  name="activityThumbnail"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Button size="lg" type="button" className="bg-green-100 hover:bg-green-300 border-2 border-green-600 text-green-600">
+                          <input
+                            type="file"
+                            className="hidden"
+                            id="fileInput"
+                            accept="image/*"
+                            onBlur={field.onBlur}
+                            name={field.name}
+                            onChange={(e) => {
+                              field.onChange(e.target.files);
+                              setSelectedImage(e.target.files?.[0] || null);
+                            }}
+                            ref={field.ref}
+                          />
+                          <label
+                            htmlFor="fileInput"
+                            className="text-neutral-90  rounded-md cursor-pointer inline-flex items-center"
+                          >
+                            <BsPaperclip />
+                            <span className="whitespace-nowrap">
+                              Choose your image
+                            </span>
+                          </label>
+                        </Button>
+                      </FormControl>
+                      
+
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+          </div>
         <Button type="submit" className="bg-green-700 w-[100%]">
           Submit
         </Button>

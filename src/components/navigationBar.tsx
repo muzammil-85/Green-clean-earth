@@ -18,7 +18,7 @@ const NavigationBar = () => {
     { id: 2, name: "Projects", link: "https://greencleanearth.org/projects" },
     { id: 4, name: "Participant list", link: "/participant-list" },
     { id: 5, name: "Login", link: "/login" },
-    { id: 6, name: "User Register", link: "/user-register" },
+    // { id: 6, name: "User Register", link: "/user-register" },
     { id: 7, name: "Register", link: "/register" },
     { id: 8, name: "About Us", link: "https://greencleanearth.org/about" },
     { id: 9, name: "Contact Us", link: "https://greencleanearth.org/contact-us" },
