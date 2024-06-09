@@ -122,7 +122,7 @@ const { toast } = useToast()
           title: "Account created.",
           description: "We've created your account for you.",
         })
-        router.push("/login");
+        router.push("/login/coordinator");
       }
       console.log(result);
     } catch (error) {

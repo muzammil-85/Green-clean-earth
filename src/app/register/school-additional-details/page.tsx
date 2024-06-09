@@ -103,7 +103,7 @@ const MultiSelectZod = () => {
           title: "Account created.",
           description: "We've created your account for you.",
         })
-        router.push("/login");
+        router.push("/login/coordinator");
       }
     } catch (error) {
       toast({

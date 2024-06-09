@@ -135,7 +135,7 @@ export default function UserRegister() {
           title: "Account created.",
           description: "We've created your account for you.",
         });
-        router.push("/login");
+        router.push("/login/user");
       }
       console.log(result);
     } catch (error) {

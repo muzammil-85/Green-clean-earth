@@ -2,7 +2,7 @@
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { fetchUserData } from "../api/my-page/route";
-
+import Cookies from "js-cookie";
 interface Profile {
   name: string;
   location: string;
@@ -35,7 +35,7 @@ export default function ProfileTab({token}) {
         console.log(data);
         if(data.user){
           const {us_name,us_address,us_mobile,us_email,us_district} = data.user[0];
-
+        Cookies.set('name', us_name, { expires: 1 });
           setProfile({
             name: us_name,
             address: us_address,

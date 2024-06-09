@@ -74,7 +74,7 @@ export default function MyUploadsTab({token}) {
   }, [token,upload]);
     return (
         <div className="">
-          <DialogUploadPlant token={token}/>
+          <DialogUploadPlant  token={token}/>
           {/* <a
           href={`/upload-plant?id=${id}&token=${token}`}
           className="float-right place-items-center w-25 bg-green-100 text-green-600  py-2 px-4 my-2 border-2 border-green-600 rounded-md hover:bg-green-600 hover:text-white"
