@@ -20,7 +20,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { BsImages, BsPaperclip } from "react-icons/bs";
 import * as z from "zod";
-import { uploadPlantData } from "../api/upload-plant/route";
+import { uploadPlantData } from "@/app/api/status/route";
 import Cookies from 'js-cookie';
 import { useToast } from "@/components/ui/use-toast";
 

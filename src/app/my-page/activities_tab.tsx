@@ -6,7 +6,7 @@ import Table from "@/components/table";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useSearchParams } from "next/navigation";
-import { fetchActivityData } from "../api/my-page/route";
+import { fetchActivityData } from "@/app/api/status/route";
 
 const headings = [
   "Sl No",

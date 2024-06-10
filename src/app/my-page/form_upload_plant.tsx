@@ -17,7 +17,7 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { BsImages, BsPaperclip } from "react-icons/bs";
 import { useToast } from "@/components/ui/use-toast";
-import { uploadPlantData } from "../api/upload-plant/route";
+import { uploadPlantData } from "@/app/api/status/route";
 import { useRouter, useSearchParams } from "next/navigation";
 
 const MAX_FILE_SIZE = 1024 * 1024 * 5;
