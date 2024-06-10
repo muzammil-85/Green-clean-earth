@@ -1,7 +1,7 @@
 "use client";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { fetchUserData } from "../api/my-page/route";
+import { fetchUserData } from "@/app/api/my-page/route";
 import Cookies from "js-cookie";
 interface Profile {
   name: string;
