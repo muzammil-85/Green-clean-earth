@@ -27,7 +27,7 @@ import { cn } from "@/lib/utils";
 import { BsImages, BsPaperclip } from "react-icons/bs"
 import { useState, useEffect } from "react"
 import { useSearchParams } from "next/navigation";
-import { uploadActivityData } from "../api/my-page/route";
+import { uploadActivityData } from "@/app/api/status/route";
 import { useToast } from "@/components/ui/use-toast";
 
 

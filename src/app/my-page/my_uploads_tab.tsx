@@ -3,7 +3,7 @@ import axios from "axios";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { apiURL, imageURL } from "@/app/api/status/route";
-import { fetchPlantsData } from "../api/my-page/route";
+import { fetchPlantsData } from "@/app/api/status/route";
 import { string } from "zod";
 import { DialogUploadPlant } from "./dialog_upload_plant";
 

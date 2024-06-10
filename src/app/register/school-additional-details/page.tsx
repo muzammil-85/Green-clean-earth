@@ -28,7 +28,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast"
 
 import { apiURL } from "@/app/api/status/route";
-import { fetchClubData } from "@/app/api/register/route";
+import { fetchClubData } from "@/app/api/status/route";
 
 const formSchema = z.object({
   value: z.array(z.string()).nonempty("Please select at least one club"),
